@@ -1,6 +1,6 @@
 import random
 
-handSize = 10
+handSize = 8
 numPerfect = 0
 arr = []
 
