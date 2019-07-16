@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 # Ace = 1
 # 2 = 2
 # ...
