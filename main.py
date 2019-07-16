@@ -2,7 +2,7 @@
 # Ace = 1
 # 2 = 2
 # ...
-# 10 = 0
+# 10 = 10
 # Jack = 11
 # Queen = 12
 # King = 13
@@ -19,7 +19,7 @@ class cheatingTheCheat:
   
     def main(self):
         self.findSequence()
-        print self.sequence
+        print (self.sequence)
         
     def findSequence(self):
         start = True
