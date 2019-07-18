@@ -16,7 +16,12 @@ class cheatingTheCheat:
         self.players = 0
         self.position = 0
         self.sequence = []
-  
+        self.roundsLeft = []
+        self.opponentCards = []
+        self.cardAmountCenter = []
+        self.cardTypeCenter = []
+        self.strategyType = []
+
     def main(self):
         self.findSequence()
         print self.sequence
