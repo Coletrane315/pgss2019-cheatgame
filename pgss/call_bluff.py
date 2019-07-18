@@ -1,23 +1,27 @@
+from pgss import probfunc
+
 class CallBluffCalculator:
 
     def should_call_bluff(self,game_state, threshold):
-        # decides whether or not the bot should call bluff on another player.
+    # decides whether or not the bot should call bluff on another player.
+
+	k=0#should be the number of the sought card in own hand
+	r=0#should be the number of the sought card played by the opponent
+	h=13#should be own hand size
+	l=0#should be opponent's hand size
 
 	#immediately call bluff if it's the opponent's last card
-	if (playing player has 0 cards):
+	if (l==0):
 		return True
 
 	#immediately call bluff if there appear to be more than four of a kind
-	if (num of cards in own hand + number of cards played > 4):
+	if (k+r > 4):
 		return True
 
 	#otherwise, calculate the probability of the player lying
 	#considers both the probability of the opponent not having the card
 	#as well as how many cards are in the center pile (risk)
-	n=cards in own hand
-	r=4-n
-	p=players
-	prob=r/p-1
+	prob=probfunc.ncr(4-k,r)*probfunc.ncr(48-h+k,l-r)/probfunc.ncr(52-h,l)
 	if ((1-prob)*(1/cards in center)>threshold):
 		return  True
 	return  False
