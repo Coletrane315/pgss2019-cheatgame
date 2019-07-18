@@ -1,20 +1,22 @@
 import random
 
-handSize = 8
+numPlayers = float(input("How many players are there playing?: "))
+handSize = round(52/numPlayers)
+
 numPerfect = 0
-arr = []
+hand = []
 
 for i in range(1000):
     for j in range(handSize):
         check = True
         x = random.randint(1,52)
-        arr.append(x)
+        hand.append(x)
         if(x > 4 * handSize):
             check = False
 
     for k in range(handSize):
         isNumberThere = False
-        for l in arr:
+        for l in hand:
             if (l == k):
                 isNumberThere = True
         if(isNumberThere == False):
@@ -22,7 +24,6 @@ for i in range(1000):
 
     if(check == True):
        numPerfect += 1
-                
-        
+             
 
 print (numPerfect / 1000.0)
