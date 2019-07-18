@@ -6,15 +6,15 @@ class GameState:
     def __init__(self):
         # setup your variables here
 
-    def CardinOthersHand():
+    def cards_in_others_hand():
         #P1 = you
-        self.NumCardsP1 = 
-        self.NumCardsP2 =
-        self.NumCardsP3 =
-        self.NumcardsP4 =
+        self.num_cards_p1 = 
+        self.num_cards_p2 =
+        self.num_cards_p3 =
+        self.num_cards_p4 =
         
-    def CardsinPile():
-        self.CardsinPile = (52-(NumCardsP1 + NumCardsP2 + NumCardsP3 + NumCardsP4)
+    def cards_in_pile():
+        self.cards_in_pile = (52-(num_cards_p1 + num_cards_p2 + num_cards_p3 + num_cards_p4)
         
 
                        
