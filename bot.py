@@ -6,11 +6,16 @@ def run_bot():
     #or keep them here?
     bluff_thresh=.3 #temp
     call_thresh=.3 #temp
+    self_seq=[]
     in_progress=True
     
     game_state = game_state.GameState()
     bluff=bluff.BluffCalculator()
     call_bluff = call_bluff.CallBluffCalculator()
+    sequence=sequence.SequenceCalculator()
+
+    self_seq=sequence.calculateSequence()
+    
     start_game()
     while in_progress==True:
         #start playing the game here
