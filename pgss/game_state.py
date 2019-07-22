@@ -8,8 +8,9 @@ class GameState:
         
         self.cycles_until_win = []
         self.sequence_self = []
+        self.num_cards_in_hands = num_cards_in_hands
+        self.cards_of_player = cards_of_player
 
-num_players = 3
 
 num_cards_in_hands = {}
 cards_of_player = {}
@@ -20,13 +21,6 @@ for x in range(num_players):
     num_cards_in_hands.update({name_player : 0})
     cards_of_player.update({name_player : cards_of_player})
     loop_player += 1
-        
-class Players():
-    #position 0 is our position
-    def __init__(self):
-        self.num_cards_in_hands = num_cards_in_hands
-        self.cards_of_player = cards_of_player
-
 
             
 
