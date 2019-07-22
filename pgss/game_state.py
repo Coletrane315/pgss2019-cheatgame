@@ -5,16 +5,20 @@ class GameState:
     
     def __init__(self):
         # setup your variables here
-
-    def num_cards_in_others_hand(self):
         self.num_cards_self = 0 
         self.num_cards_p2 = 0
         self.num_cards_p3 = 0
         self.num_cards_p4 = 0
-        
-    def cards_in_pile(self):
+        self.cycles_until_win = 0
+        self.cycles_until_p2_win = 0
+        self.cycles_until_p3_win = 0
+        self.cycles_until_p4_win = 0
+        self.sequence_self = []
+        self.sequence_p2 = []
+        self.sequence_p3 = []
+        self.sequence_p4 = []
         self.cards_in_pile = (52-(num_cards_self + num_cards_p2 + num_cards_p3 + num_cards_p4))
-
+        
     def card_types_in_own_hand (self):
         self.ace = 0
         self.two = 0
@@ -78,25 +82,5 @@ class GameState:
         self.jack = 0
         self.queen = 0
         self.king = 0
-        
-    def sequence (self):
-        self.sequence_self = []
-        self.sequence_p2 = []
-        self.sequence_p3 = []
-        self.sequence_p4 = []
-
-    def cycles_until_win (self):
-        self.cycles_until_win = 0
-        self.cycles_until_p2_win = 0
-        self.cycles_until_p3_win = 0
-        self.cycles_until_p4_win = 0
-
-                            
-
-    
-    
-
-        
-        
 
                        
