@@ -30,6 +30,54 @@ class GameState:
         self.jack = 0
         self.queen = 0
         self.king = 0
+
+    def card_types_in_p2_hand:
+        self.ace = 0
+        self.two = 0
+        self.three = 0
+        self.four = 0
+        self.five = 0
+        self.six = 0
+        self.seven = 0
+        self.seven = 0
+        self.eight = 0
+        self.nine = 0
+        self.ten = 0
+        self.jack = 0
+        self.queen = 0
+        self.king = 0
+
+    def card_types_in_p3_hand:
+        self.ace = 0
+        self.two = 0
+        self.three = 0
+        self.four = 0
+        self.five = 0
+        self.six = 0
+        self.seven = 0
+        self.seven = 0
+        self.eight = 0
+        self.nine = 0
+        self.ten = 0
+        self.jack = 0
+        self.queen = 0
+        self.king = 0
+
+    def card_types_in_p4_hand:
+        self.ace = 0
+        self.two = 0
+        self.three = 0
+        self.four = 0
+        self.five = 0
+        self.six = 0
+        self.seven = 0
+        self.seven = 0
+        self.eight = 0
+        self.nine = 0
+        self.ten = 0
+        self.jack = 0
+        self.queen = 0
+        self.king = 0
         
     def sequence (self):
         self.sequence_self = []
