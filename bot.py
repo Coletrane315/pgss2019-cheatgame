@@ -15,7 +15,7 @@ def run_bot():
     while in_progress==True:
         #start playing the game here
 """
-Psuedocode for self turn:
+numberPsuedocode for self turn:
         if turn==self:
             play(self_turn(number,bluff_thresh))
             #where number is the number that we are being required to play.
@@ -48,15 +48,22 @@ def self_turn(bluff_thresh):
         #play cards
 
 #TODO: clean up this method when the game_state variables are finished
+        #consider cards_self for the list of cards that the bot holds
+        #consider num_of_cards for the list of how many of each card the bot holds
+        #Don't worry if your vars don't line up - I can clean it up to fit with
+        #yours later --Frank
 #Decides which cards to play.
 #Considers whether or not to lie by calling decide_bluff.
 #Returns a list of cards to play.
 def decide_cards_to_play(number,bluff_thresh):
     cards_to_play=[]
-    if game_state.num_cards_self[number]!=0:
-        cards_to_play.append(number)
+    if game_state.num_of_cards[number]!=0:
+        for i in cards_self:
+            if i.value==number:
+                cards_to_play.append(cards_self.pop(i))
+        num_of_cards=0
         if decide_bluff(bluff_thresh)!=False:
-            cards_to_play.append(bluff_card)
+            cards_to_play.append(cards_self.pop(bluff_card))
         return cards_to_play
     else:
         #TODO: find last owned card(s) in the sequence, and return that.
