@@ -36,8 +36,14 @@ class GameState:
         self.sequence_p2 = []
         self.sequence_p3 = []
         self.sequence_p4 = []
-        
-                    
+
+    def cycles_until_win (self):
+        self.cycles_until_win = 0
+        self.cycles_until_p2_win = 0
+        self.cycles_until_p3_win = 0
+        self.cycles_until_p4_win = 0
+
+                            
 
     
     
