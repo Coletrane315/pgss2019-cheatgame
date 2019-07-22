@@ -6,34 +6,31 @@ class GameState:
     def __init__(self):
         # setup your variables here
         
-        self.cycles_until_win = 
+        self.cycles_until_win = []
         self.sequence_self = []
 
+num_players = 3
+
+num_cards_in_hands = {}
+cards_of_player = {}
+loop_player = 0
+for x in range(num_players):
+    name_player = "num_cards_p" + str(loop_player)
+    cards = []
+    num_cards_in_hands.update({name_player : 0})
+    cards_of_player.update({name_player : cards_of_player})
+    loop_player += 1
         
-class Players:
+class Players():
     #position 0 is our position
-    num_cards_in_hands = {}
-    loop_player = 0
-    for x in range(num_players):
-        name_player = "num_cards_p" + str(loop_player)
-        num_cards_in_hands.update({name_player : 0})
-        loop_player += 1
+    def __init__(self):
+        self.num_cards_in_hands = num_cards_in_hands
+        self.cards_of_player = cards_of_player
 
-    #this is the number of players!
-    number_of_players = 0
 
-    #define hands dictionary as empty for the time being
-    hands = {}
-    for x in range(number_of_players):
-        #where 'n' is the number of cards in the nth player's hand
-        n = 0 
-        #lst is a dummy variable that will store the cards in the nth player's hand during the loop
-        lst = []
-        for i in range(n): 
-            ele = 0 
-            #this loop will append the player's hand with card 'ele' 
-            lst.append(ele)
-        #Stores lst as the nth player's hand
-        hands[x] = lst
+            
 
-    #Now you have a dictionary containing lists of all the player's hands!
+players = Players()
+
+print(players.num_cards_in_hands)
+print(players.cards_of_player)
