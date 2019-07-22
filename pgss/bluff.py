@@ -4,7 +4,7 @@ class BluffCalculator:
         def prob_calculator(self, A, B, C, D, n):
                 #A is the size of the bot's hand. B, C, and D are the hand sizes of players 2,3 and 4 respectively. n is the number of a
                 #certain card the bot doesn't have. If the turn is 2's and the bot has 1 2, then n=3.
-                chance = (combination(B, n) + combination(C, n) + combination(D, n)) / combination(52 - A,  n)
+                chance = 1 - (combination(B, n) + combination(C, n) + combination(D, n)) / combination(52 - A,  n)
                 
         #precondition: we have x number of cards and need to find out if we should lie or not 
         #postcondition: returns the card that we should lie with (0 means we shouldn't lie)
