@@ -33,6 +33,11 @@ class GameState:
         
     def sequence (self):
         self.sequence_self = []
+        self.sequence_p2 = []
+        self.sequence_p3 = []
+        self.sequence_p4 = []
+        
+                    
 
     
     
