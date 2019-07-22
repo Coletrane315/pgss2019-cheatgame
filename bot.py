@@ -38,7 +38,7 @@ Psuedocode for opponent turn:
 
 #starts the game and initializes the variables within game_state.
 def start_game():
-    #make calls to methods in game_state to initialize variables here
+    #TODO: make calls to methods in game_state to initialize variables here
     pass
 
 def self_turn(bluff_thresh):
@@ -83,6 +83,7 @@ def decide_call_bluff(opp,call_thresh):
 #This is called whenever the center pile is collected,
 #ie, when someone calls bluff.
 def center_pile_collected(player):
+    #TODO: make calls to game_state to update variables
     pass
 
 if __name__ == '__main__':
