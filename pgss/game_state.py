@@ -31,8 +31,10 @@ class GameState:
         self.queen = 0
         self.king = 0
         
-       
-        
+    def sequence (self):
+        self.sequence_self = []
+
+    
     
 
         
