@@ -15,13 +15,24 @@ def run_bot():
     while in_progress==True:
         #start playing the game here
 """
+Psuedocode for self turn:
         if turn==self:
             play(self_turn(number,bluff_thresh))
             #where number is the number that we are being required to play.
             #can be calculated from sequence number or be pulled from the main
             #framework.
-            #And play is supposedly a method to communicate to the server
-            #to play a card.
+            #And play() is supposedly a method to communicate to the server
+            #to play cards, and which cards to play.
+"""
+"""
+Psuedocode for opponent turn:
+        if turn!=self:
+            if decide_call_bluff(call_thresh):
+                call()
+            else:
+                pass()
+        #where call() and pass() are methods to communicate to the server
+        #what to do on the opponent's turn.
 """
         pass
 
@@ -62,7 +73,7 @@ def decide_bluff(bluff_thresh):
 
 #Uses call_bluff to determine whether or not to call bluff on an opponent.
 #Returns True if the bot decides to lie. Otherwise, returns False.
-def opponent_turn(opp,call_thresh):
+def decide_call_bluff(opp,call_thresh):
     if call_bluff.should_call_bluff(game_state,opp)>call_thresh:
         return True
     else:
