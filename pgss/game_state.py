@@ -11,20 +11,22 @@ class GameState:
         self.num_cards_in_hands = num_cards_in_hands
         self.cards_of_player = cards_of_player
 
+num_players = 5
 
 num_cards_in_hands = {}
 cards_of_player = {}
 loop_player = 0
 for x in range(num_players):
-    name_player = "num_cards_p" + str(loop_player)
+    name_num_cards = "num_cards_p" + str(loop_player)
+    name_player = "player_hands" + str(loop_player)
     cards = []
-    num_cards_in_hands.update({name_player : 0})
+    num_cards_in_hands.update({name_num_cards : 0})
     cards_of_player.update({name_player : cards_of_player})
     loop_player += 1
 
             
 
-players = Players()
+test = GameState()
 
-print(players.num_cards_in_hands)
-print(players.cards_of_player)
+print(test.num_cards_in_hands)
+print(test.cards_of_player)
