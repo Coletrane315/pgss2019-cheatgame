@@ -6,7 +6,6 @@ def run_bot():
     #or keep them here?
     bluff_thresh=.3 #temp
     call_thresh=.3 #temp
-    self_seq=[]
     in_progress=True
     
     game_state = game_state.GameState()
