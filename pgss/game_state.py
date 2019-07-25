@@ -4,7 +4,7 @@ class GameState:
     __card_count = 0
     
     def __init__(self):
-        # setup your variables here
+        # setup your variables here y'all
         
         self.cycles_until_win = []
         self.sequence_self = []
@@ -14,11 +14,11 @@ class GameState:
         self.known_cards_center = []
         self.num_played_cards = 0
 
-num_players = 5
-
 num_cards_hands = {}
 cards_of_player = {}
 loop_player = 0
+#this loop will create a dictionary of the number of cards in each players hands
+#The bot is player 0 and the dictionary scales with the number of players
 for x in range(num_players):
     name_num_cards = "num_cards_p" + str(loop_player)
     name_player = "player_hands" + str(loop_player)
@@ -29,7 +29,5 @@ for x in range(num_players):
 
             
 
-test = GameState()
 
-print(test.num_cards_center)
-print(test.cards_of_player)
+
