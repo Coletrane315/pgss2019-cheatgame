@@ -7,6 +7,7 @@ def run_bot():
     #or keep them here?
     bluff_thresh=.3 #temp
     call_thresh=.3 #temp
+    self_seq=[]
     in_progress=True
     c=cheat.client.Client("My_Bot")
     
@@ -25,10 +26,8 @@ Psuedocode for self turn:
         if turn==self:
             c.play_cards(decide_card_to_play(number,bluff_thresh))
             #where number is the number that we are being required to play.
-            #can be calculated from sequence number or be pulled from the main
-            #framework.
-            #And play_cards() is supposedly a method to communicate to the server
-            #to play cards, and which cards to play.
+            #can be calculated from sequence number or be pulled from
+            #a variable in the main framework.
 """
 """
 Psuedocode for opponent turn:
@@ -37,8 +36,6 @@ Psuedocode for opponent turn:
                 c.play_call()
             else:
                 c.play_pass()
-        #where call() and pass() are methods to communicate to the server
-        #what to do on the opponent's turn.
 """
         pass
 
