@@ -1,3 +1,5 @@
+
+
 class GameState:
 
     __cycles_until_win = []

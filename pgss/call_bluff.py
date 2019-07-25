@@ -2,13 +2,14 @@ import game_state
 
 class CallBluffCalculator:
 
-    def should_call_bluff(self,game_state, threshold, opponent):
+    def should_call_bluff(self,game_state, threshold, opponent, card_type_played, num_cards_played):
         # decides whether or not the bot should call bluff on another player.
 
-        k=0 #should be the number of the sought card in own hand
-        r=0 #should be the number of the sought card played by the opponent
-        h=13 #should be own hand size
-        l=0 #should be opponent's hand size
+	card_played = card_played
+        k = self.__cards_of_player[0].count(card_played) #should be the number of the sought card in own hand
+        r= num_cards_played #should be the number of the sought card played by the opponent
+        h = self.__num_cards_hands[0] #should be own hand size
+        l = self.__cards_of_hands[opponent] #should be opponent's hand size
 
 	#immediately call bluff if it's the opponent's last card
         if (l==0):

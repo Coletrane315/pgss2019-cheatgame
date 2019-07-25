@@ -24,8 +24,8 @@ def run_bot():
 """
 Psuedocode for self turn:
         if turn==self:
-            c.play_cards(decide_card_to_play(number,bluff_thresh))
-            #where number is the number that we are being required to play.
+            c.play_cards(decide_card_to_play(value,bluff_thresh))
+            #where value is the value that we are being required to play.
             #can be calculated from sequence number or be pulled from
             #a variable in the main framework.
 """
@@ -52,9 +52,9 @@ def start_game():
 #Decides which cards to play.
 #Considers whether or not to lie by calling decide_bluff.
 #Returns a list of cards to play.
-def decide_cards_to_play(number,bluff_thresh):
+def decide_cards_to_play(value,bluff_thresh):
     cards_to_play=[]
-    if game_state.num_of_cards[number]!=0:
+    if game_state.num_of_cards[value]!=0:
         for i in cards_self:
             if i.value==number:
                 cards_to_play.append(cards_self.pop(i))
