@@ -1,4 +1,5 @@
 from pgss import bluff, call_bluff, game_state
+import cheat.client
 
 def run_bot():
 
@@ -8,6 +9,7 @@ def run_bot():
     call_thresh=.3 #temp
     self_seq=[]
     in_progress=True
+    c=cheat.client.Client("My_Bot")
     
     game_state = game_state.GameState()
     bluff=bluff.BluffCalculator()
@@ -20,22 +22,22 @@ def run_bot():
     while in_progress==True:
         #start playing the game here
 """
-numberPsuedocode for self turn:
+Psuedocode for self turn:
         if turn==self:
-            play(self_turn(number,bluff_thresh))
+            c.play_cards(decide_card_to_play(number,bluff_thresh))
             #where number is the number that we are being required to play.
             #can be calculated from sequence number or be pulled from the main
             #framework.
-            #And play() is supposedly a method to communicate to the server
+            #And play_cards() is supposedly a method to communicate to the server
             #to play cards, and which cards to play.
 """
 """
 Psuedocode for opponent turn:
         if turn!=self:
             if decide_call_bluff(call_thresh):
-                call()
+                c.play_call()
             else:
-                pass()
+                c.play_pass()
         #where call() and pass() are methods to communicate to the server
         #what to do on the opponent's turn.
 """
@@ -45,12 +47,6 @@ Psuedocode for opponent turn:
 def start_game():
     #TODO: make calls to methods in game_state to initialize variables here
     pass
-
-def self_turn(bluff_thresh):
-    if decide_bluff!=False:
-        #play selected cards
-    else:
-        #play cards
 
 #TODO: clean up this method when the game_state variables are finished
         #consider cards_self for the list of cards that the bot holds
@@ -67,8 +63,12 @@ def decide_cards_to_play(number,bluff_thresh):
             if i.value==number:
                 cards_to_play.append(cards_self.pop(i))
         num_of_cards=0
-        if decide_bluff(bluff_thresh)!=False:
-            cards_to_play.append(cards_self.pop(bluff_card))
+
+        bluff_card=decide_bluff(bluff_thresh)
+        if bluff_card!=False:
+            for i in cards_self:
+                if i==bluff_card:
+                    cards_to_play.append(cards_self.pop(i))
         return cards_to_play
     else:
         #TODO: find last owned card(s) in the sequence, and return that.
@@ -78,7 +78,7 @@ def decide_cards_to_play(number,bluff_thresh):
 #Otherwise, returns False.
 def decide_bluff(bluff_thresh):
     if bluff.should_bluff() > bluff_thresh:
-        bluff_card = bluff.pick_card_to_lie_with
+        bluff_card = bluff.pick_card_to_lie_with(game_state)
         return bluff_card
     else:
         return False
