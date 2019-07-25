@@ -25,7 +25,7 @@ class GameState:
 
             self.__cycles_until_win = 0
             self.__sequence_self = []
-            self.__num_cards_hands = __num_cards_in_hands
+            self.__num_cards_hands = __num_cards_hands
             self.__cards_of_player = __cards_of_player
             self.__num_cards_center = 52 - sum(__num_cards_hands.values())
             self.__known_cards_center = []
