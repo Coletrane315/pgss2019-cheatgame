@@ -23,13 +23,13 @@ class GameState:
             
     def __init__(self):
 
-            self.cycles_until_win = 0
-            self.sequence_self = []
-            self.num_cards_hands = __num_cards_in_hands
-            self.cards_of_player = __cards_of_player
-            self.num_cards_center = 52 - sum(__num_cards_hands.values())
-            self.known_cards_center = []
-            self.num_played_cards = 0
+            self.__cycles_until_win = 0
+            self.__sequence_self = []
+            self.__num_cards_hands = __num_cards_in_hands
+            self.__cards_of_player = __cards_of_player
+            self.__num_cards_center = 52 - sum(__num_cards_hands.values())
+            self.__known_cards_center = []
+            self.__num_played_cards = 0
 
 
             
