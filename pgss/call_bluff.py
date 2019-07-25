@@ -1,4 +1,4 @@
-from pgss import probfunc
+import game_state
 
 class CallBluffCalculator:
 
