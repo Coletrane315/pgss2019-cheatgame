@@ -4,8 +4,9 @@ class GameState:
     __card_count = 0
     
     def __init__(self):
-        # setup your variables here y'all
-        
+
+        #I have no idea what this first variable does but I was told to put it in.
+        #If it's supposed to be a number instead of a list go ahead and change it.
         self.cycles_until_win = []
         self.sequence_self = []
         self.num_cards_hands = num_cards_in_hands
