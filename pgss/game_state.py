@@ -31,9 +31,6 @@ class GameState:
             self.known_cards_center = []
             self.num_played_cards = 0
 
-num_players = 4
-
-
 
             
 
