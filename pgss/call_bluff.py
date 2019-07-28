@@ -36,5 +36,9 @@ tell the bot if it should call or not.
 
         prob=probfunc.ncr(4-k,r)*probfunc.ncr(48-h+k,l-r)/probfunc.ncr(52-h,l)
 
-        return  (1-prob)*(1/self.cards_in_pile)*(j-2)
+        return  (1-prob)*(1/self.cards_in_pile)*((j-2)/20)
+        #TODO: find a better way to represent the risk considering how close
+        #the bot is to winning, currently represented by ((j-2)/20), but this
+        #likely will be bad considering this means it always calls when having
+        #more than 23 cards.
 
