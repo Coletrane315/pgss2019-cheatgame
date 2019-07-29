@@ -3,6 +3,9 @@ import cheat.client
 
 def run_bot():
 
+    game_id="nothing"
+    #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
+
     bluff_thresh=.3 #temp
     call_thresh=.3 #temp
     in_progress=True
@@ -12,12 +15,14 @@ def run_bot():
     bluff=bluff.BluffCalculator()
     call_bluff = call_bluff.CallBluffCalculator()
     
-    start_game(game_state)
+    start_game(game_state,game_id)
     while in_progress==True:
         #start playing the game here
 """
 Psuedocode for self turn:
         if turn==self:
+            value=c.get_card_value()
+            #TODO check this
             c.play_cards(decide_card_to_play(value,bluff_thresh))
             game_state.__bot.__sequence.append(game_state.__bot.__sequence.pop(0))
             c.update_player_info()
@@ -40,8 +45,10 @@ Psuedocode for opponent turn:
 """
 Starts the game and initializes the variables within game_state.
 """
-def start_game(game_state):
-    pass
+def start_game(game_state,game_id):
+    bot=game_state.__bot
+    c.game_id=game_id
+    bot.hand=c.hand
 #starts the game and initializes the variables within game_state.
 #TODO
 
