@@ -119,7 +119,7 @@ class GameState:
     def __init__(self,num_players,bot_hand,bot_player_number):
         self._players=[]
         self._bot=Player([],[])
-        self._bot_pos=0
+        self._bot_pos=bot_player_number
         self._num_cards_center=0
         self._known_center_cards=[]
         self._num_played_cards=0
