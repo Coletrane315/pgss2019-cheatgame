@@ -3,22 +3,16 @@ import cheat.client
 
 def run_bot():
 
-    #Decision - put these variables in game_state,
-    #or keep them here?
     bluff_thresh=.3 #temp
     call_thresh=.3 #temp
-    self_seq=[]
     in_progress=True
     c=cheat.client.Client("My_Bot")
     
     game_state = game_state.GameState()
     bluff=bluff.BluffCalculator()
     call_bluff = call_bluff.CallBluffCalculator()
-    sequence=sequence.SequenceCalculator()
-
-    self_seq=sequence.calculateSequence()
     
-    start_game()
+    start_game(game_state)
     while in_progress==True:
         #start playing the game here
 """
@@ -42,8 +36,8 @@ Psuedocode for opponent turn:
 """
 Starts the game and initializes the variables within game_state.
 """
-def start_game():
-    #TODO: make calls to methods in game_state to initialize variables here
+def start_game(game_state):
+    game_state.
     pass
 
 #TODO: clean up this method when the game_state variables are finished
