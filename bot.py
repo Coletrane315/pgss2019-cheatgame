@@ -19,6 +19,7 @@ def run_bot():
 Psuedocode for self turn:
         if turn==self:
             c.play_cards(decide_card_to_play(value,bluff_thresh))
+            game_state.__bot.__sequence.append(game_state.__bot.__sequence.pop(0))
             c.update_player_info()
             #where value is the value that we are being required to play.
             #can be calculated from sequence number or be pulled from
@@ -44,32 +45,30 @@ def start_game(game_state):
 #starts the game and initializes the variables within game_state.
 #TODO
 
-#TODO: clean up this method when the game_state variables are finished
-        #consider cards_self for the list of cards that the bot holds
-        #consider num_of_cards for the list of how many of each card the bot holds
-        #Don't worry if your vars don't line up - I can clean it up to fit with
-        #yours later --Frank
 """
 Decides which cards to play.
 Considers whether or not to lie by calling decide_bluff.
 Returns a list of cards to play.
 """
 def decide_cards_to_play(value,bluff_thresh):
+    bot=game_state.__bot
     cards_to_play=[]
-    if game_state.num_of_cards[value]!=0:
-        for i in cards_self:
-            if i.value==number:
-                cards_to_play.append(cards_self.pop(i))
-        num_of_cards=0
+    if bot.__num_each_card[bot.get_number_val(value)]!=0:
+        for i in bot.__hand:
+            if i.value==value:
+                bot.__num_each_card[i.value-1]-=1
+                cards_to_play.append(bot.__hand.remove(i))
 
         bluff_card=decide_bluff(bluff_thresh)
         if bluff_card!=False:
-            for i in cards_self:
+            for i in bot.__hand:
                 if i==bluff_card:
-                    cards_to_play.append(cards_self.pop(i))
+                    bot.__num_each_card[i.value-1]-=1
+                    cards_to_play.append(bot.__hand.remove(i))
         return cards_to_play
     else:
-        return game_state.__bot.get_last_card_in_seq()
+        return bot.get_last_card_in_seq()
+    
 """
 Uses bluff.py to determine whether or not to lie.
 If the bot decides to lie, it returns the card to lie with.
