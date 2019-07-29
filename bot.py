@@ -19,6 +19,7 @@ def run_bot():
 Psuedocode for self turn:
         if turn==self:
             c.play_cards(decide_card_to_play(value,bluff_thresh))
+            c.update_player_info()
             #where value is the value that we are being required to play.
             #can be calculated from sequence number or be pulled from
             #a variable in the main framework.
@@ -28,8 +29,10 @@ Psuedocode for opponent turn:
         if turn!=self:
             if decide_call_bluff(call_thresh):
                 c.play_call()
+                c.update_player_info()
             else:
                 c.play_pass()
+                c.update_player_info()
 """
         pass
 
