@@ -1,20 +1,17 @@
-import game_state
+from pgss import game_state
 
 class CallBluffCalculator:
-
-"""
-Determines whether the bot should call bluff or not.
-Returning a value of 1.0 means it is guaranteed to call bluff.
-Otherwise, returns a float indicating the probability that it should
-call bluff.
-This float is used in bot.py by comparison against a threshold to ultimately
-tell the bot if it should call or not.
-"""
+    """
+    Determines whether the bot should call bluff or not.
+    Returning a value of 1.0 means it is guaranteed to call bluff.
+    Otherwise, returns a float indicating the probability that it should
+    call bluff.
+    This float is used in bot.py by comparison against a threshold to ultimately
+    tell the bot if it should call or not.
+    """
     def should_call_bluff(self,game_state, opponent, card_val, num_cards_played):
         # decides whether or not the bot should call bluff on another player.
-
-	card_played = card_played
-	if card_val=="J":
+        if card_val=="J":
             card_val=10
         elif card_val=="Q":
             card_val=11
