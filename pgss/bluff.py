@@ -1,4 +1,4 @@
-from pgss\probfunc import ncr as combination
+from pgss import probfunc
 from pgss import game_state
 
 
@@ -15,8 +15,8 @@ class BluffCalculator:
                 chance_numerator = 0
                 n = 4 - cards[card_turn - 1]
                 for hands in opp_hands:
-                        chance_numerator += combination(hands, n)
-                chance = 1 - chance_numerator/ combination(52-A, n)
+                        chance_numerator += probfunc.ncr(hands, n)
+                chance = 1 - chance_numerator/ probfunc.ncr(52-A, n)
                 return chance
                         
                 
