@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='ac73e6a6-0b9a-4eb0-9497-f6ddd762abc5'
+    game_id='35af11f6-5996-4238-b4b6-beaaace2d790'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
@@ -32,8 +32,7 @@ def run_bot():
         if current_turn!=c.get_current_turn():
             current_turn=c.get_current_turn()
             if int(current_turn['Position'])==game_state._bot_pos:
-                print('my turn now!!!')
-                value=c.get_current_turn()['CardValue'][1]
+                value=c.get_current_turn()['CardValue']
                 c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh))
                 game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
                 c.update_player_info()
@@ -67,6 +66,7 @@ def start_game(client):
     c.update_game()
     c.update_player_info()
     c.hand.sort(key=lambda x:x['Value'])
+    print("hand: "+str(c.hand))
     gs=game_state.GameState(c.players_connected,c.hand,int(c.position))
     return gs
     
@@ -77,15 +77,16 @@ Considers whether or not to lie by calling decide_bluff.
 Returns a list of cards to play.
 """
 def decide_cards_to_play(value,game_state,bluff_thresh):
+    print("hand on local: "+str(game_state._bot._hand))
     bot=game_state._bot
     cards_to_play=[]
     if bot._num_each_card[bot.get_number_val(value)]!=0:
         for i in bot._hand:
-            if i.value==value:
+            if i['Value']==value:
                 bot._num_each_card[i.value-1]-=1
                 cards_to_play.append(bot._hand.remove(i))
 
-        bluff_card=decide_bluff(bluff_thresh)
+        bluff_card=decide_bluff(bluff_thresh,game_state,i['Value'])
         if bluff_card!=False:
             for i in bot._hand:
                 if i==bluff_card:
@@ -100,9 +101,9 @@ Uses bluff.py to determine whether or not to lie.
 If the bot decides to lie, it returns the card to lie with.
 Otherwise, returns False.
 """
-def decide_bluff(bluff_thresh):
+def decide_bluff(bluff_thresh,game_state,card_val):
     bluff_calc=bluff.BluffCalculator()
-    if bluff_calc.should_bluff() > bluff_thresh:
+    if bluff_calc.should_bluff(game_state,game_state.get_number_val(card_val)) > bluff_thresh:
         bluff_card = bluff_calc.pick_card_to_lie_with(game_state)
         return bluff_card
     else:
