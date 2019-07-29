@@ -1,3 +1,4 @@
+from pgss import probfunc
 from probfunc import ncr as combination
 from pgss import game_state
 
