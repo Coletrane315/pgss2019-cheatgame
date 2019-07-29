@@ -10,10 +10,10 @@ class GameState:
     __num_cards_center=0
 
     #the known cards in the center based on what the bot played
-    __num_known_center_cards=[]
+    __known_center_cards=[]
 
     #variable of played cards to explain how far the game has progressed
-    num_played_cards = 0
+    __num_played_cards = 0
 
 
     def __init__():
@@ -71,7 +71,8 @@ class Player:
     #For opponents, this shall be only cards the bot knows.
     __num_each_card=[]
 
-    #The number of cards in total
+    #The number of cards in total in the player's hand.
+    #This is known for the opponents too based on what they played.
     __num_cards=0
 
     #The unique sequence for every player
