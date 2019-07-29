@@ -99,7 +99,7 @@ class Player:
     Find the last card in the sequence that the player has in hand, and
     the index of that card in sequence is how many turns until victory.
     """
-    def __init__(hand,sequence):
+    def __init__(self,hand,sequence):
         __hand=hand
         __sequence=sequence
         __num_cards=__hand.len()
@@ -120,14 +120,14 @@ class Player:
                 break
             break
 
-    def get_last_card_in_seq():
+    def get_last_card_in_seq(self):
         for i in range(__sequence.len()-1,0,-1):
             for j in range(__hand):
                 if __sequence[i]==__hand[j].get_val():
                     num_each_card[get_number_val(hand[j].get_Val())]-=1
                     return __hand.remove(i)
 
-    def get_number_val(card_val):
+    def get_number_val(self,card_val):
         if card_val=="J":
             return 11
         elif card_val=="Q":
