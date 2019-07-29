@@ -1,8 +1,4 @@
 from pgss import bluff, call_bluff, game_state
-<<<<<<< HEAD
-=======
-import cheat
->>>>>>> fc83c5d237b53b6dc6c0dab8fda2d66e9a6a8ca4
 from cheat import client
 
 def run_bot():
