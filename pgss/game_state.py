@@ -1,23 +1,110 @@
+class Player:
+
+    #Represents the player's hand
+    #For opponents, this shall be only cards the bot knows.
+    _hand:[]
+
+    #Represents the number of each card a player is holding.
+    #This, while not necessary, makes calculating odds much easier
+    #as you do not have to count the number of cards every time.
+    #For opponents, this shall be only cards the bot knows.
+    _num_each_card:[]
+
+    #The number of cards in total in the player's hand.
+    #This is known for the opponents too based on what they played.
+    _num_cards:0
+
+    #The unique sequence for every player
+    #in which they must play cards
+    _sequence:[]
+
+    #How many cycles it will take for the player to win.
+    #For the bot, this can be calculated
+    #though for the opponents, the lowest amount of cycles
+    #will be assumed, ie, divide the number of cards they have
+    #by 4 since they can play max 4 cards per turn.
+    _cycles_until_win:0
+
+    """
+    Constructor for a player requires:
+    The player's hand, hand
+    The player's sequence, sequence
+    The rest of the properties (fields for Java ppl) can be calculated
+    as they are in this constructor:
+    num_cards=hand.len()
+    Count the number of cards in __hand to get __num_each_card
+    Find the last card in the sequence that the player has in hand, and
+    the index of that card in sequence is how many turns until victory.
+    """
+    def __init__(self,hand,sequence):
+        self._hand=hand
+        self._sequence=sequence
+        self._num_cards=len(self._hand)
+        self._num_each_card=[]
+        self._num_cards=0
+        self._cycles_until_win=0
+        
+        #TODO: are cards given sorted, or will we have to sort here?
+
+        #Simply makes __num_each_card a list of 13 0s to add onto later
+        for i in range(13):
+            self._num_each_card.append(0)
+            
+        self.count_num_cards()
+        self.count_cycles_until_win()
+
+    def update(self):
+        self.count_num_cards()
+        self.count_cycles_until_win()
+
+    def count_num_cards(self):
+        for card in self._hand:
+            self._num_each_card[card['Value']-1]+=1
+
+    def count_cycles_until_win(self):
+        for i in range(self._sequence.len()-1,0,-1):
+            for j in range(self._hand):
+                if self._sequence[i]==self._hand[j]['Value']:
+                    #same for here: check get_val()
+                    self._cycles_until_win=i
+                break
+            break
+
+    def get_last_card_in_seq(self):
+        for i in range(self._sequence.len()-1,0,-1):
+            for j in range(self._hand):
+                if self._sequence[i]==self._hand[j]['Value']:
+                    self._num_each_card[self._hand[j]['Value']]-=1
+                    return _hand.remove(i)
+
+    def get_number_val(self,card_val):
+        if card_val=="J":
+            return 11
+        elif card_val=="Q":
+            return 12
+        elif card_val=="K":
+            return 13
+        return card_val
+
 class GameState:
 
     #list of player objects representing players in the game
-    __players = []
+    _players = []
 
     #player object which is the bot, also represented in __players
-    __bot = Player()
+    _bot = Player([0],[0])
 
     #position of the bot
-    __bot_pos=0
+    _bot_pos=0
 
     #the number of cards in the center pile
-    __num_cards_center=0
+    _num_cards_center=0
 
     #the known cards in the center based on what the bot played
-    __known_center_cards=[]
+    _known_center_cards=[]
 
     #variable of played cards to explain how far the game has progressed
-    __num_played_cards = 0
-
+    _num_played_cards = 0
 
     def __init__():
         pass
@@ -32,10 +119,10 @@ class GameState:
         for i in range(num_players):
             if i==bot_player_number:
                 x=Player(bot_hand,calc_seq(i,num_players))
-                __bot=x
+                _bot=x
             else:
                 x=Player([],calc_seq(i,num_players))
-            __players.append(x)
+            _players.append(x)
             
 
     """
@@ -52,93 +139,3 @@ class GameState:
             seq.append(i)
             i+=total_players
         return seq
-
-    
-
-class Player:
-
-    #Represents the player's hand
-    #For opponents, this shall be only cards the bot knows.
-    __hand=[]
-
-    #Represents the number of each card a player is holding.
-    #This, while not necessary, makes calculating odds much easier
-    #as you do not have to count the number of cards every time.
-    #For opponents, this shall be only cards the bot knows.
-    __num_each_card=[]
-
-    #The number of cards in total in the player's hand.
-    #This is known for the opponents too based on what they played.
-    __num_cards=0
-
-    #The unique sequence for every player
-    #in which they must play cards
-    __sequence=[]
-
-    #How many cycles it will take for the player to win.
-    #For the bot, this can be calculated
-    #though for the opponents, the lowest amount of cycles
-    #will be assumed, ie, divide the number of cards they have
-    #by 4 since they can play max 4 cards per turn.
-    __cycles_until_win=0
-
-    def __init__():
-        pass
-
-    """
-    Constructor for a player requires:
-    The player's hand, hand
-    The player's sequence, sequence
-    The rest of the properties (fields for Java ppl) can be calculated
-    as they are in this constructor:
-    num_cards=hand.len()
-    Count the number of cards in __hand to get __num_each_card
-    Find the last card in the sequence that the player has in hand, and
-    the index of that card in sequence is how many turns until victory.
-    """
-    def __init__(self,hand,sequence):
-        __hand=hand
-        __sequence=sequence
-        __num_cards=__hand.len()
-        #TODO: are cards given sorted, or will we have to sort here?
-
-        #Simply makes __num_each_card a list of 13 0s to add onto later
-        for i in range(13):
-            __num_each_card.append(0)
-            
-        count_num_cards()
-        count_cycles_until_win()
-
-    def update(self):
-        count_num_cards()
-        count_cycles_until_win()
-
-    def count_num_cards(self):
-        for card in __hand:
-            __num_each_card[card['Suit']+=1
-            #check this get_val() function in card class??
-
-    def count_cycles_until_win(self):
-        for i in range(__sequence.len()-1,0,-1):
-            for j in range(__hand):
-                if __sequence[i]==__hand[j]['Suit']:
-                    #same for here: check get_val()
-                    __cycles_until_win=i
-                break
-            break
-
-    def get_last_card_in_seq(self):
-        for i in range(__sequence.len()-1,0,-1):
-            for j in range(__hand):
-                if __sequence[i]==__hand[j].get_val():
-                    num_each_card[get_number_val(hand[j].get_Val())]-=1
-                    return __hand.remove(i)
-
-    def get_number_val(self,card_val):
-        if card_val=="J":
-            return 11
-        elif card_val=="Q":
-            return 12
-        elif card_val=="K":
-            return 13
-        return card_val
