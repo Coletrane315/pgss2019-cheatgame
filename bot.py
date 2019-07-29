@@ -66,8 +66,7 @@ def decide_cards_to_play(value,bluff_thresh):
                     cards_to_play.append(cards_self.pop(i))
         return cards_to_play
     else:
-        #TODO: find last owned card(s) in the sequence, and return that.
-
+        return game_state.__bot.get_last_card_in_seq()
 """
 Uses bluff.py to determine whether or not to lie.
 If the bot decides to lie, it returns the card to lie with.
