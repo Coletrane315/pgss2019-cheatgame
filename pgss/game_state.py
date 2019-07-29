@@ -2,7 +2,7 @@
 
 class GameState:
 
-    __cycles_until_win = 0
+    __cycles_until_win = []
     __sequence_self = []
     __num_cards_hands = {}
     __cards__player = 0
