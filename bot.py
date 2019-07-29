@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='6a6a4d5f-87aa-48e0-9fef-43dcd22b3809'
+    game_id='5c3b2dd4-dd36-4a8b-a203-9aec487ba057'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
@@ -15,31 +15,35 @@ def run_bot():
     join_game(c,game_id)
     #wait for the game to start
     while in_progress==False:
-        print(c.get_current_turn())
-        print(c.get_current_turn()==None)
-        if c.get_current_turn!=None:
+        x=c.get_current_turn()
+        print(x)
+        if x!=None:
             in_progress=True
+        else:
+            in_progress=False
     
-    game_state=start_game(c,game_id)
+    game_state=start_game(c)
     
     while in_progress==True:
         #start playing the game here
         c.update_game()
         c.update_player_info()
         
-        if c.get_current_turn()['Position']==game_state.__bot_pos:
+        if c.get_current_turn()['Position']==game_state._bot_pos:
             value=c.get_current_turn()['CardValue'][1]
             c.play_cards(decide_card_to_play(value,bluff_thresh))
-            game_state.__bot.__sequence.append(game_state.__bot.__sequence.pop(0))
+            game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
             c.update_player_info()
             
-        if c.get_current_turn()['Position']!=game_state.__bot_pos:
-            if decide_call_bluff(call_thresh):
-                c.play_call()
-                c.update_player_info()
-            else:
-                c.play_pass()
-                c.update_player_info()
+        if c.get_current_turn()['Position']!=game_state._bot_pos:
+            x=c.get_current_turn()
+            if 'CardsDown' in x.keys():
+                if decide_call_bluff(x['Position'],call_thresh,x['CardValue'],x['CardsDown']):
+                    c.play_call()
+                    c.update_player_info()
+                else:
+                    c.play_pass()
+                    c.update_player_info()
 """
 Joins the game.
 """
@@ -56,9 +60,11 @@ Starts the game and initializes the variables within game_state.
 def start_game(client):
     c=client
     info=c.get_current_turn()
+    c.update_game()
+    c.update_player_info()
     c.hand.sort(key=lambda x:x['Value'])
-    game_state=game_state.GameState(c.players_connected,c.hand,c.get_current_turn()['Position'])
-    return game_state
+    gs=game_state.GameState(c.players_connected,c.hand,c.get_current_turn()['Position'])
+    return gs
     
 
 """
