@@ -130,9 +130,9 @@ class Player:
 
     def get_number_val(self,card_val):
         if card_val=="J":
-            return 11
+            return 10
         elif card_val=="Q":
-            return 12
+            return 11
         elif card_val=="K":
-            return 13
+            return 12
         return card_val
