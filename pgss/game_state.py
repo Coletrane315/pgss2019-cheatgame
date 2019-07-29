@@ -110,12 +110,22 @@ class Player:
         for i in range(13):
             __num_each_card.append(0)
             
+        count_num_cards()
+        count_cycles_until_win()
+
+    def update(self):
+        count_num_cards()
+        count_cycles_until_win()
+
+    def count_num_cards(self):
         for card in __hand:
-            __num_each_card[card.get_val()]+=1
+            __num_each_card[card['Suit']+=1
             #check this get_val() function in card class??
+
+    def count_cycles_until_win(self):
         for i in range(__sequence.len()-1,0,-1):
             for j in range(__hand):
-                if __sequence[i]==__hand[j].get_val():
+                if __sequence[i]==__hand[j]['Suit']:
                     #same for here: check get_val()
                     __cycles_until_win=i
                 break
