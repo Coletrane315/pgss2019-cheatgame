@@ -15,11 +15,11 @@ tell the bot if it should call or not.
 
 	card_played = card_played
 	if card_val=="J":
-            card_val=11
+            card_val=10
         elif card_val=="Q":
-            card_val=12
+            card_val=11
         elif card_val=="K":
-            card_val=13
+            card_val=12
         k = game_state.__bot.__num_each_card[card_val] #should be the number of the sought card in own hand
         r = num_cards_played #should be the number of the sought card played by the opponent
         h = game_state.__bot.__hand.len() #should be own hand size
