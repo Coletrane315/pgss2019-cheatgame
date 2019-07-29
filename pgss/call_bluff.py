@@ -10,15 +10,21 @@ call bluff.
 This float is used in bot.py by comparison against a threshold to ultimately
 tell the bot if it should call or not.
 """
-    def should_call_bluff(self,game_state, opponent, card_type_played, num_cards_played):
+    def should_call_bluff(self,game_state, opponent, card_val, num_cards_played):
         # decides whether or not the bot should call bluff on another player.
 
 	card_played = card_played
-        k = game_state.__cards_of_player[0].count(card_played) #should be the number of the sought card in own hand
+	if card_val=="J":
+            card_val=10
+        elif card_val=="Q":
+            card_val=11
+        elif card_val=="K":
+            card_val=12
+        k = game_state.__bot.__num_each_card[card_val] #should be the number of the sought card in own hand
         r = num_cards_played #should be the number of the sought card played by the opponent
-        h = game_state.__num_cards_hands[0] #should be own hand size
-        l = game_state.__cards_of_hands[opponent] #should be opponent's hand size
-        j = game_state.cycles_until_win #should be how many turns until bot wins
+        h = game_state.__bot.__hand.len() #should be own hand size
+        l = game_state.__players[opponent].__hand.len() #should be opponent's hand size
+        j = game_state.__bot.__cycles_until_win #should be how many turns until bot wins
 
 	#immediately call bluff if it's the opponent's last card
         if (l==0):
@@ -37,8 +43,7 @@ tell the bot if it should call or not.
         prob=probfunc.ncr(4-k,r)*probfunc.ncr(48-h+k,l-r)/probfunc.ncr(52-h,l)
 
         return  (1-prob)*(1/self.cards_in_pile)*((j-2)/20)
-        #TODO: find a better way to represent the risk considering how close
-        #the bot is to winning, currently represented by ((j-2)/20), but this
-        #likely will be bad considering this means it always calls when having
-        #more than 23 cards.
+        #TODO: maybe find a better way to represent the risk considering
+        #how close the bot is to winning, currently represented
+        #by ((j-2)/20)
 
