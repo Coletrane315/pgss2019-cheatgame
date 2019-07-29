@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='b1eaaaad-5267-40c7-825c-cdd2df560b76'
+    game_id='ac73e6a6-0b9a-4eb0-9497-f6ddd762abc5'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
@@ -16,34 +16,38 @@ def run_bot():
     #wait for the game to start
     while in_progress==False:
         x=c.get_current_turn()
-        print(x)
         if x!=None:
             in_progress=True
         else:
             in_progress=False
     
     game_state=start_game(c)
+    current_turn=0
     
     while in_progress==True:
         #start playing the game here
         c.update_game()
         c.update_player_info()
-        
-        if c.get_current_turn()['Position']==game_state._bot_pos:
-            value=c.get_current_turn()['CardValue'][1]
-            c.play_cards(decide_card_to_play(value,bluff_thresh))
-            game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
-            c.update_player_info()
+
+        if current_turn!=c.get_current_turn():
+            current_turn=c.get_current_turn()
+            if int(current_turn['Position'])==game_state._bot_pos:
+                print('my turn now!!!')
+                value=c.get_current_turn()['CardValue'][1]
+                c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh))
+                game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
+                c.update_player_info()
+                
+            if int(current_turn['Position'])!=game_state._bot_pos:
+                x=c.get_current_turn()
+                if 'CardsDown' in x.keys():
+                    if decide_call_bluff(x['Position'],call_thresh,x['CardValue'],x['CardsDown']):
+                        c.play_call()
+                        c.update_player_info()
+                    else:
+                        c.play_pass()
+                        c.update_player_info()
             
-        if c.get_current_turn()['Position']!=game_state._bot_pos:
-            x=c.get_current_turn()
-            if 'CardsDown' in x.keys():
-                if decide_call_bluff(x['Position'],call_thresh,x['CardValue'],x['CardsDown']):
-                    c.play_call()
-                    c.update_player_info()
-                else:
-                    c.play_pass()
-                    c.update_player_info()
 """
 Joins the game.
 """
@@ -63,7 +67,7 @@ def start_game(client):
     c.update_game()
     c.update_player_info()
     c.hand.sort(key=lambda x:x['Value'])
-    gs=game_state.GameState(c.players_connected,c.hand,c.get_current_turn()['Position'])
+    gs=game_state.GameState(c.players_connected,c.hand,int(c.position))
     return gs
     
 
@@ -72,21 +76,21 @@ Decides which cards to play.
 Considers whether or not to lie by calling decide_bluff.
 Returns a list of cards to play.
 """
-def decide_cards_to_play(value,bluff_thresh):
-    bot=game_state.__bot
+def decide_cards_to_play(value,game_state,bluff_thresh):
+    bot=game_state._bot
     cards_to_play=[]
-    if bot.__num_each_card[bot.get_number_val(value)]!=0:
-        for i in bot.__hand:
+    if bot._num_each_card[bot.get_number_val(value)]!=0:
+        for i in bot._hand:
             if i.value==value:
-                bot.__num_each_card[i.value-1]-=1
-                cards_to_play.append(bot.__hand.remove(i))
+                bot._num_each_card[i.value-1]-=1
+                cards_to_play.append(bot._hand.remove(i))
 
         bluff_card=decide_bluff(bluff_thresh)
         if bluff_card!=False:
-            for i in bot.__hand:
+            for i in bot._hand:
                 if i==bluff_card:
-                    bot.__num_each_card[i.value-1]-=1
-                    cards_to_play.append(bot.__hand.remove(i))
+                    bot._num_each_card[i.value-1]-=1
+                    cards_to_play.append(bot._hand.remove(i))
         return cards_to_play
     else:
         return bot.get_last_card_in_seq()
