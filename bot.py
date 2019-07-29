@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='35af11f6-5996-4238-b4b6-beaaace2d790'
+    game_id='a5873215-f79a-41f9-884a-b5a66d4596aa'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
@@ -29,6 +29,8 @@ def run_bot():
         c.update_game()
         c.update_player_info()
 
+        print("local turn: "+str(current_turn))
+        print("server turn: "+str(c.get_current_turn()))
         if current_turn!=c.get_current_turn():
             current_turn=c.get_current_turn()
             if int(current_turn['Position'])==game_state._bot_pos:
@@ -79,22 +81,32 @@ Returns a list of cards to play.
 def decide_cards_to_play(value,game_state,bluff_thresh):
     print("hand on local: "+str(game_state._bot._hand))
     bot=game_state._bot
+    value=bot.get_number_val(value)
     cards_to_play=[]
     if bot._num_each_card[bot.get_number_val(value)]!=0:
-        for i in bot._hand:
-            if i['Value']==value:
-                bot._num_each_card[i.value-1]-=1
-                cards_to_play.append(bot._hand.remove(i))
+        for i in range(len(bot._hand)):
+            if bot._hand[i]['Value']==value:
+                bot._num_each_card[bot._hand[i]['Value']-1]-=1
+                cards_to_play.append(bot._hand[i])
 
-        bluff_card=decide_bluff(bluff_thresh,game_state,i['Value'])
+        bluff_card=decide_bluff(bluff_thresh,game_state,value)
         if bluff_card!=False:
-            for i in bot._hand:
-                if i==bluff_card:
-                    bot._num_each_card[i.value-1]-=1
-                    cards_to_play.append(bot._hand.remove(i))
+            for i in range(len(bot._hand)):
+                if bot._hand[i]==bluff_card:
+                    bot._num_each_card[bot._hand[i]['Value']-1]-=1
+                    cards_to_play.append(bot._hand[i])
+
+        for i in cards_to_play:
+            bot._hand.remove(i)
+                    
+        print("cards played (truth): "+str(cards_to_play))
         return cards_to_play
     else:
-        return bot.get_last_card_in_seq()
+        print("cards played (forced to lie: "+str(bot.get_last_card_in_seq()))
+        x=bot.get_last_card_in_seq()
+        cards_to_play.append(x)
+        bot._hand.remove(x)
+        return cards_to_play
     
 """
 Uses bluff.py to determine whether or not to lie.
