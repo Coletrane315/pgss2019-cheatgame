@@ -1,4 +1,5 @@
 from pgss import bluff, call_bluff, game_state
+import cheat
 from cheat import client
 
 def run_bot():
