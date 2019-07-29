@@ -6,6 +6,9 @@ class GameState:
     #player object which is the bot, also represented in __players
     __bot = Player()
 
+    #position of the bot
+    __bot_pos=0
+
     #the number of cards in the center pile
     __num_cards_center=0
 
@@ -46,14 +49,7 @@ class GameState:
         for x in range(13):
             if i>13:
                 i=i%13
-            if i==11:
-                seq.append("J")
-            elif i==12:
-                seq.append("Q")
-            elif i==13:
-                seq.append("K")
-            else:
-                seq.append(i)
+            seq.append(i)
             i+=total_players
         return seq
 
