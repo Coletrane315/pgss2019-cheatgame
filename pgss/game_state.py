@@ -64,7 +64,7 @@ class Player:
 
     def count_cycles_until_win(self):
         for i in range(len(self._sequence)-1,0,-1):
-            for j in range(self._hand):
+            for j in range(len(self._hand)):
                 if self._sequence[i]==self._hand[j]['Value']:
                     #same for here: check get_val()
                     self._cycles_until_win=i
@@ -72,40 +72,42 @@ class Player:
             break
 
     def get_last_card_in_seq(self):
-        for i in range(self._sequence.len()-1,0,-1):
-            for j in range(self._hand):
-                if self._sequence[i]==self._hand[j]['Value']:
-                    self._num_each_card[self._hand[j]['Value']]-=1
-                    return _hand.remove(i)
+        for i in range(len(self._sequence)-1,0,-1):
+            for j in range(len(self._hand)):
+                if self._sequence[i]==self.get_number_val(self._hand[j]['Value']):
+                    self._num_each_card[self.get_number_val(self._hand[j]['Value'])-1]-=1
+                    return self._hand[j]
 
     def get_number_val(self,card_val):
-        if card_val=="J":
+        if card_val=="Ace":
+            return 1
+        elif card_val=="Jack":
             return 11
-        elif card_val=="Q":
+        elif card_val=="Queen":
             return 12
-        elif card_val=="K":
+        elif card_val=="King":
             return 13
-        return card_val
+        return int(card_val)
 
 class GameState:
 
     #list of player objects representing players in the game
-    _players = []
+    _players:[]
 
     #player object which is the bot, also represented in __players
-    _bot = Player([0],[0])
+    _bot:Player([],[])
 
     #position of the bot
-    _bot_pos=0
+    _bot_pos:0
 
     #the number of cards in the center pile
-    _num_cards_center=0
+    _num_cards_center:0
 
     #the known cards in the center based on what the bot played
-    _known_center_cards=[]
+    _known_center_cards:[]
 
     #variable of played cards to explain how far the game has progressed
-    _num_played_cards = 0
+    _num_played_cards:0
 
     def __init__():
         pass
@@ -116,14 +118,19 @@ class GameState:
     The bot's hand, bot_hand
     Which player number is the bot, bot_player_number
     """
-    def __init__(num_players,bot_hand,bot_player_number):
-        for i in range(num_players):
+    def __init__(self,num_players,bot_hand,bot_player_number):
+        self._players=[]
+        self._bot_pos=bot_player_number
+        self._num_cards_center=0
+        self._known_center_cards=[]
+        self._num_played_cards=0
+        for i in range(1,num_players+1):
             if i==bot_player_number:
-                x=Player(bot_hand,calc_seq(i,num_players))
-                _bot=x
+                x=Player(bot_hand,self.calc_seq(i,num_players))
+                self._bot=x
             else:
-                x=Player([],calc_seq(i,num_players))
-            _players.append(x)
+                x=Player([],self.calc_seq(i,num_players))
+            self._players.append(x)
             
 
     """
@@ -131,7 +138,7 @@ class GameState:
     based on the player number and how many players there are total.
     Assumes the game is using a full deck of 13 values.
     """
-    def calc_seq(player_num,total_players):
+    def calc_seq(self,player_num,total_players):
         i = player_num
         seq=[]
         for x in range(13):
@@ -140,3 +147,14 @@ class GameState:
             seq.append(i)
             i+=total_players
         return seq
+
+    def get_number_val(self,card_val):
+        if card_val=="Ace":
+            return 1
+        elif card_val=="Jack":
+            return 11
+        elif card_val=="Queen":
+            return 12
+        elif card_val=="King":
+            return 13
+        return int(card_val)
