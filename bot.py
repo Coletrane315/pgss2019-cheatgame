@@ -1,56 +1,60 @@
 from pgss import bluff, call_bluff, game_state
-import cheat.client
+import cheat
+from cheat import client
 
 def run_bot():
 
-    game_id="nothing"
+    game_id="2a1bf90e-c23f-4413-a94b-838ad57214f7"
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
     call_thresh=.3 #temp
-    in_progress=True
-    c=cheat.client.Client("My_Bot")
+    in_progress=False
+    c=cheat.client.Client("My_Cheat_Bot")
     
-    game_state = game_state.GameState()
     bluff=bluff.BluffCalculator()
     call_bluff = call_bluff.CallBluffCalculator()
+
+    #wait for the game to start
+    while in_progress==False:
+        if c.get_current_turn!=None:
+            in_progress=True
     
-    start_game(game_state,game_id)
+    game_state=start_game(game_id)
+    
     while in_progress==True:
         #start playing the game here
-"""
-Psuedocode for self turn:
-        if turn==self:
-            value=c.get_card_value()
-            #TODO check this
+        c.update_game()
+        c.update_player_info()
+        
+        if c.get_current_turn()['Position']==game_state.__bot_pos:
+            value=c.get_current_turn()['CardValue'][1]
             c.play_cards(decide_card_to_play(value,bluff_thresh))
             game_state.__bot.__sequence.append(game_state.__bot.__sequence.pop(0))
             c.update_player_info()
-            #where value is the value that we are being required to play.
-            #can be calculated from sequence number or be pulled from
-            #a variable in the main framework.
-"""
-"""
-Psuedocode for opponent turn:
-        if turn!=self:
+            
+        if c.get_current_turn()['Position']!=game_state.__bot_pos:
             if decide_call_bluff(call_thresh):
                 c.play_call()
                 c.update_player_info()
             else:
                 c.play_pass()
                 c.update_player_info()
-"""
-        pass
+    
 
 """
 Starts the game and initializes the variables within game_state.
 """
 def start_game(game_state,game_id):
-    bot=game_state.__bot
     c.game_id=game_id
-    bot.hand=c.hand
-#starts the game and initializes the variables within game_state.
-#TODO
+    c.join_game()
+    c.update_game()
+    c.update_player_info()
+    info=c.get_current_turn()
+    c.hand.sort(key=lambda x:x['Value'])
+    game_state=game_state.GameState(c.players_connected,c.hand,c.get_current_turn()['Position'])
+    return game_state
+    
 
 """
 Decides which cards to play.
