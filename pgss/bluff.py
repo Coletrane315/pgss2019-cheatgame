@@ -1,5 +1,4 @@
-from pgss import probfunc
-from probfunc import ncr as combination
+from pgss\probfunc import ncr as combination
 from pgss import game_state
 
 
@@ -47,7 +46,7 @@ class BluffCalculator:
 
         #calculates whether we should lie if we have two cards       
         def should_bluff_2_card(self, game_state):
-            value = prob_calculator(game_state)
+                value = prob_calculator(game_state)
             #CHANGE 0.5 ONCE MACHINE LEARNING DONE
                 if value >= 0 and value <= 1:
                         if value > 0.5:
