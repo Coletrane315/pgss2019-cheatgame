@@ -95,9 +95,12 @@ Updates the various variables in game_state.
 This is called whenever the center pile is collected,
 ie, when someone calls bluff.
 """
-def center_pile_collected(player):
-    #TODO: make calls to game_state to update variables
-    pass
+def center_pile_collected(game_state,player_num):
+    for card in game_state.__known_center_cards:
+        game_state.__players[player_num].__hand.append(game_state.__known_center_cards.pop(card))
+    game_state.__num_played_cards+=game_state.__num_cards_center
+    game_state.__num_cards_center=0
+    #TODO: this looks good but I feel like something is missing.
 
 if __name__ == '__main__':
     run_bot()
