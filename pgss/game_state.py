@@ -72,20 +72,22 @@ class Player:
             break
 
     def get_last_card_in_seq(self):
-        for i in range(self._sequence.len()-1,0,-1):
+        for i in range(len(self._sequence)-1,0,-1):
             for j in range(self._hand):
                 if self._sequence[i]==self._hand[j]['Value']:
                     self._num_each_card[self._hand[j]['Value']]-=1
                     return _hand.remove(i)
 
     def get_number_val(self,card_val):
-        if card_val=="J":
+        if card_val=="Ace":
+            return 1
+        elif card_val=="Jack":
             return 11
-        elif card_val=="Q":
+        elif card_val=="Queen":
             return 12
-        elif card_val=="K":
+        elif card_val=="King":
             return 13
-        return card_val
+        return int(card_val)
 
 class GameState:
 
@@ -118,12 +120,11 @@ class GameState:
     """
     def __init__(self,num_players,bot_hand,bot_player_number):
         self._players=[]
-        self._bot=Player([],[])
         self._bot_pos=bot_player_number
         self._num_cards_center=0
         self._known_center_cards=[]
         self._num_played_cards=0
-        for i in range(num_players):
+        for i in range(1,num_players+1):
             if i==bot_player_number:
                 x=Player(bot_hand,self.calc_seq(i,num_players))
                 self._bot=x
@@ -146,3 +147,14 @@ class GameState:
             seq.append(i)
             i+=total_players
         return seq
+
+    def get_number_val(self,card_val):
+        if card_val=="Ace":
+            return 1
+        elif card_val=="Jack":
+            return 11
+        elif card_val=="Queen":
+            return 12
+        elif card_val=="King":
+            return 13
+        return int(card_val)
