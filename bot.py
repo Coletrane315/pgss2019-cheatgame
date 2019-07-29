@@ -84,8 +84,8 @@ def decide_bluff(bluff_thresh):
 Uses call_bluff to determine whether or not to call bluff on an opponent.
 Returns True if the bot decides to lie. Otherwise, returns False.
 """
-def decide_call_bluff(opp,call_thresh):
-    if call_bluff.should_call_bluff(game_state,opp)>=call_thresh:
+def decide_call_bluff(opp,call_thresh,card_val,num_cards_played):
+    if call_bluff.should_call_bluff(game_state,opp,card_val,num_cards_played)>=call_thresh:
         return True
     else:
         return False
