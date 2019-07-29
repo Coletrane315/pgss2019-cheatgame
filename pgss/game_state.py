@@ -119,3 +119,19 @@ class Player:
                     __cycles_until_win=i
                 break
             break
+
+    def get_last_card_in_seq():
+        for i in range(__sequence.len()-1,0,-1):
+            for j in range(__hand):
+                if __sequence[i]==__hand[j].get_val():
+                    num_each_card[get_number_val(hand[j].get_Val())]-=1
+                    return __hand.remove(i)
+
+    def get_number_val(card_val):
+        if card_val=="J":
+            return 11
+        elif card_val=="Q":
+            return 12
+        elif card_val=="K":
+            return 13
+        return card_val
