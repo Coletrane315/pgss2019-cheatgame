@@ -26,10 +26,10 @@ class BluffCalculator:
             cards = game_state._bot._num_each_card
             num = cards[card_turn - 1]
             if num == 1:
-                return should_bluff_1_card(self, game_state) #kicks it to function to calculate when we have 1 card
+                return should_bluff_1_card(game_state) #kicks it to function to calculate when we have 1 card
 
             elif num == 2: 
-                return should_bluff_2_card(self, game_state) #kicks it to function to calculate when we have 2 cards
+                return should_bluff_2_card(game_state) #kicks it to function to calculate when we have 2 cards
 
             else:
                 return 0; #indicates we should not lie -- in this instance if we have 3 or 4 of a card
