@@ -33,24 +33,13 @@ Psuedocode for opponent turn:
 """
         pass
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 """
 Starts the game and initializes the variables within game_state.
 """
 def start_game(game_state):
-    game_state.
-=======
-#starts the game and initializes the variables within game_state.
-=======
-"""
-Starts the game and initializes the variables within game_state.
-"""
->>>>>>> 63b2c9406b58a6aa1e11169336f49fe5b4b54d9c
-def start_game():
-    #TODO: make calls to methods in game_state to initialize variables here
->>>>>>> cc58c85c42668c4671e9a14ac5287660c5fd8373
     pass
+#starts the game and initializes the variables within game_state.
+#TODO
 
 #TODO: clean up this method when the game_state variables are finished
         #consider cards_self for the list of cards that the bot holds
