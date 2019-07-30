@@ -4,8 +4,7 @@ from pgss import game_state
 
 class BluffCalculator:
         def prob_calculator(self, card_turn, game_state, r):
-                #A is the size of the bot's hand. B, C, and D are the hand sizes of players 2,3 and 4 respectively. n is the number of a
-                #certain card the bot doesn't have. If the turn is 2's and the bot has 1 2, then n=3.
+                #n is the number of a certain card the bot doesn't have. If the turn is 2's and the bot has 1 2, then n=3.
                 botHandSize = game_state._bot._num_cards
                 opp_hands=[]
                 for player in game_state._players:
@@ -61,7 +60,6 @@ class BluffCalculator:
         def should_bluff_1_card(self, card_turn, game_state, threshold):
                 valueLieWithThreeCopies = self.prob_calculator(card_turn, game_state, 2)
                 valueLieWithTwoCopies = self.prob_calculator(card_turn, game_state, 3)
-                if value >= 0 and value <= 1:
                         if valueLieWithThreeCopies > threshold:
                                 return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
                         elif valueLieWithTwoCopies > threshold:
@@ -73,8 +71,6 @@ class BluffCalculator:
         #calculates whether we should lie if we have two cards by calculating probability of opponent having other 2 copies.       
         def should_bluff_2_card(self, card_turn, game_state, threshold):
                 value = self.prob_calculator(card_turn, game_state, 2)
-            #CHANGE 0.5 ONCE MACHINE LEARNING DONE
-                if value >= 0 and value <= 1:
                         if value > threshold:
                                 return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
             
