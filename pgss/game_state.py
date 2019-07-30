@@ -79,6 +79,8 @@ class Player:
                     return self._hand[j]
 
     def get_number_val(self,card_val):
+        if isinstance(card_val,list):
+            card_val=card_val[1]
         if card_val=="Ace":
             return 1
         elif card_val=="Jack":
@@ -149,6 +151,8 @@ class GameState:
         return seq
 
     def get_number_val(self,card_val):
+        if isinstance(card_val,list):
+            card_val=card_val[1]
         if card_val=="Ace":
             return 1
         elif card_val=="Jack":
