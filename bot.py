@@ -65,7 +65,7 @@ def run_bot():
                             if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['CardValue']):
                                 game_state._players[int(x['Position'])-1]._hand.remove(card)
                                 game_state._players[int(x['Position'])-1]._num_cards-=1
-                        game_state._players[int(x['Position'])-1]._num_each_card=0 
+                        game_state._players[int(x['Position'])-1]._num_each_card[game_state.get_number_val(x['CardValue'])-1]=0 
 
                 print("deciding to call...")
                 

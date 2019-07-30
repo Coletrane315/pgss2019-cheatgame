@@ -66,7 +66,7 @@ class Player:
     def count_num_cards(self):
         for card in self._hand:
             if isinstance(card,dict):
-                self._num_each_card[self.get_number_val(card['Value'])-1]+=1
+                self._num_each_card[int(card['Value'])-1]+=1
 
     def count_cycles_until_win_bot(self):
         for i in range(len(self._sequence)-1,0,-1):
