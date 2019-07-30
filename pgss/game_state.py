@@ -25,6 +25,11 @@ class Player:
     #by 4 since they can play max 4 cards per turn.
     _cycles_until_win:0
 
+    #How many cards this player has played into the center pile.
+    #Resets when the center pile is collected.
+    #Used for tracking cards that switched hands.
+    _cards_played_into_center:0
+
     """
     Constructor for a player requires:
     The player's hand, hand
