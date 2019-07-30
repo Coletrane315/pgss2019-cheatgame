@@ -3,7 +3,7 @@ from pgss import game_state
 
 
 class BluffCalculator:
-        def prob_calculator(self, card_turn, game_state, r):
+        def prob_calculator(self, card_turn, game_state):
                 #A is the size of the bot's hand. B, C, and D are the hand sizes of players 2,3 and 4 respectively. n is the number of a
                 #certain card the bot doesn't have. If the turn is 2's and the bot has 1 2, then n=3.
                 A = game_state._bot._num_cards
@@ -15,13 +15,8 @@ class BluffCalculator:
                 chance_numerator = 0
                 n = 4 - cards[card_turn - 1]
                 for hands in opp_hands:
-                        #I'm assuming "hands" stands for the number of cards the opponent has
-                        # and "A" is the number of cards the bot has.
-                        #I'm defining r as the number of cards of the desired value any opponent has in their hand.
-                        #Like, if you want to use this function to calculate the probability of an opponent having two Aces
-                        #r = 2.
-                        chance_numerator += probfunc.ncr(48-A+(4-n), hands - r)*probfunc.ncr(n, r)
-                chance = chance_numerator/ probfunc.ncr(52-A, hands)
+                        chance_numerator += probfunc.ncr(hands, n)
+                chance = 1 - chance_numerator/ probfunc.ncr(52-A, n)
                 return chance
                         
                 

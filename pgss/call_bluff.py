@@ -1,5 +1,4 @@
 from pgss import game_state
-from pgss import probfunc
 
 class CallBluffCalculator:
     """
@@ -12,23 +11,17 @@ class CallBluffCalculator:
     """
     def should_call_bluff(self,game_state, opponent, card_val, num_cards_played):
         # decides whether or not the bot should call bluff on another player.
-        if card_val=="Ace":
-            card_val=1
-        elif card_val=="Jack":
+        if card_val=="J":
+            card_val=10
+        elif card_val=="Q":
             card_val=11
-        elif card_val=="Queen":
+        elif card_val=="K":
             card_val=12
-        elif card_val=="King":
-            card_val=13
-        if isinstance(card_val,list):
-            card_val=int(card_val[1])
-        opponent=int(opponent)
-        k = game_state._bot._num_each_card[card_val-1] #should be the number of the sought card in own hand
+        k = game_state.__bot.__num_each_card[card_val] #should be the number of the sought card in own hand
         r = num_cards_played #should be the number of the sought card played by the opponent
-        h = len(game_state._bot._hand) #should be own hand size
-        l = len(game_state._players[opponent]._hand) #should be opponent's hand size
-        j = game_state._bot._cycles_until_win #should be how many turns until bot wins
-        i = game_state._num_cards_center #should be number of cards in center pile
+        h = game_state.__bot.__hand.len() #should be own hand size
+        l = game_state.__players[opponent].__hand.len() #should be opponent's hand size
+        j = game_state.__bot.__cycles_until_win #should be how many turns until bot wins
 
 	#immediately call bluff if it's the opponent's last card
         if (l==0):
@@ -46,7 +39,7 @@ class CallBluffCalculator:
 
         prob=probfunc.ncr(4-k,r)*probfunc.ncr(48-h+k,l-r)/probfunc.ncr(52-h,l)
 
-        return  (1-prob)*(1/i)*((j-2)/20)
+        return  (1-prob)*(1/self.cards_in_pile)*((j-2)/20)
         #TODO: maybe find a better way to represent the risk considering
         #how close the bot is to winning, currently represented
         #by ((j-2)/20)

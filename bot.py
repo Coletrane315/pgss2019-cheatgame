@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='56cd7505-1356-48a8-bc92-99630a2eddae'
+    game_id='0f382eca-5ffc-47cf-8b13-9018a0831c8c'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
@@ -38,26 +38,17 @@ def run_bot():
                 c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh))
                 game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
                 c.update_player_info()
-
-        try:
-            print(int(c.get_current_turn()['Position'])!=game_state._bot_pos)
-            print(c.get_current_turn()['CardsDown']!=game_state._num_cards_center)
-            if int(c.get_current_turn()['Position'])!=game_state._bot_pos and c.get_current_turn()['CardsDown']!=0:
-                print("deciding to call...")
-                x=c.get_current_turn()
-                if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
-                    print("i call cheat!")
+                
+        if int(current_turn['Position'])!=game_state._bot_pos and c.get_current_turn()['CardsDown']!=game_State._num_cards_center:
+            print("deciding to call...")
+            x=c.get_current_turn()
+            if 'CardsDown' in x.keys():
+                if decide_call_bluff(x['Position'],call_thresh,x['CardValue'],x['CardsDown']):
                     c.play_call()
                     c.update_player_info()
                 else:
-                    print("seems ok enough...")
                     c.play_pass()
                     c.update_player_info()
-        except KeyError:
-            #this is basically just for the case where the ['CardsDown'] key
-            #isn't in the turn dictionary, so nothing happens since
-            #you can't call cheat on nothing.
-            pass
             
 """
 Joins the game.
@@ -140,7 +131,7 @@ def decide_bluff(bluff_thresh,game_state,card_val):
 Uses call_bluff to determine whether or not to call bluff on an opponent.
 Returns True if the bot decides to lie. Otherwise, returns False.
 """
-def decide_call_bluff(game_state,opp,card_val,num_cards_played,call_thresh):
+def decide_call_bluff(opp,call_thresh,card_val,num_cards_played):
     call_bluff_calc = call_bluff.CallBluffCalculator()
     if call_bluff_calc.should_call_bluff(game_state,opp,card_val,num_cards_played)>=call_thresh:
         return True
@@ -153,7 +144,6 @@ This is called whenever the center pile is collected,
 ie, when someone calls bluff.
 """
 def center_pile_collected(game_state,player_num):
-    print("i know that player "+str(player_num)+" has "+str(game_state._known_center_cards))
     for card in game_state._known_center_cards:
         game_state._players[player_num]._hand.append(game_state._known_center_cards.pop(card))
     game_state._players[player_num].hand.sort(key=lambda x:x['Value'])
