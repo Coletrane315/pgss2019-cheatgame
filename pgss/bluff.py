@@ -29,19 +29,18 @@ class BluffCalculator:
         #precondition: we have x number of cards and need to find out if we should lie or not 
         #postcondition: returns the card that we should lie with (0 means we shouldn't lie)
         
-       def should_bluff(self,game_state, card_turn):
-            cards = game_state._bot._num_each_card
+        def should_bluff(self,game_state, card_turn):
+                cards = game_state._bot._num_each_card
         
-            #How many of card bot has. For people looking at formula on paper, num = k.     
-            num = cards[card_turn - 1]
-            if num == 1:
-                return should_bluff_1_card(game_state) #kicks it to function to calculate when we have 1 card
+                #How many of card bot has. For people looking at formula on paper, num = k.     
+                num = cards[card_turn - 1]
+                if num == 1:
+                        return should_bluff_1_card(game_state) #kicks it to function to calculate when we have 1 card
 
-            elif num == 2: 
-                return should_bluff_2_card(game_state) #kicks it to function to calculate when we have 2 cards
-
-            else:
-                return 1; #indicates we should not lie -- in this instance if we have 3 or 4 of a card
+                elif num == 2: 
+                        return should_bluff_2_card(game_state) #kicks it to function to calculate when we have 2 cards
+                else:
+                        return 1; #indicates we should not lie -- in this instance if we have 3 or 4 of a card
 
         #calculates whether we should lie if we have one card by calculating probability of opponent having 2 copies.
         def should_bluff_1_card(self, game_state):
@@ -72,6 +71,6 @@ class BluffCalculator:
                 
             #x is the list of cards we lie with.    
             x = []    
-            for i in range(0,index)   
+            for i in range(0,index): 
                 x.append(game_state._bot.get_last_card_in_seq())
             return x 

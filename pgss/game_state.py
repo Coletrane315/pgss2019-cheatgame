@@ -56,9 +56,6 @@ class Player:
     def update(self):
         self.count_num_cards()
         self.count_cycles_until_win()
-        self._num_cards=0
-        for i in self._num_each_card():
-            self._num_cards+=i
 
     def count_num_cards(self):
         for card in self._hand:
