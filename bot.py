@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='05977ee7-e1aa-4b3c-a9dc-45ab96803fd7'
+    game_id='98790e26-76a7-4306-bde1-c165d277916e'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh= -1 #temp
@@ -91,7 +91,7 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     value=bot.get_number_val(value)
     cards_to_play=[]
     bluff_calc=bluff.BluffCalculator()
-    cards=bluff_calc.should_bluff(game_state,value,thresh)
+    cards=bluff_calc.should_bluff(game_state,value,bluff_thresh)
     if cards!=0:
         cards_to_play=cards
     else:
