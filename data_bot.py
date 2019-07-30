@@ -3,80 +3,85 @@ import cheat
 from cheat import client
 import csv
 
-def run_bot() with open('data.csv', 'w') as csvFile:
 
-    writer = csv
-    game_id='add52ffd-c383-44ab-9670-df45beee951c'
-    #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
+def run_bot():
+    with open('data.csv', 'w') as csvFile:
+        writer = csv.writer(csvFile)
+        
+        bluff_thresh=-1 #temp
+        call_thresh=.3 #temp
+        in_progress=False
+        c=cheat.client.Client("My_Cheat_Bot")
+        game_list = c.list_games()
+        game_id= game_list[-1]['Id']
+        join_game(c,game_id)
 
-    bluff_thresh= .3 #temp
-
-    game_id='5b364a0d-3c98-4e3b-97d0-141420bd1981'
-    #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
-
-    bluff_thresh= 100 #temp
-    call_thresh=.3 #temp
-    in_progress=False
-    c=cheat.client.Client("My_Cheat_Bot")
-    join_game(c,game_id)
-
-    if c.wait_for_message()[0]=='GAME_STARTED':
-        game_state=start_game(c)
-    
-    while True:
-        #start playing the game here
-        c.update_player_info()
-
-        print("time to play!")
-        if int(c.get_current_turn()['Position'])==game_state._bot_pos:
-            print("playing cards...")
-            value=c.get_current_turn()['CardValue']
-            c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh))
-            game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
+        if c.wait_for_message()[0]=='GAME_STARTED':
+            game_state=start_game(c)
+        
+        while True:
+            #start playing the game here
             c.update_player_info()
-            msg=c.wait_for_message()
-            if msg[0]=='GAME_OVER':
-                break
+            lie = True
+            print("time to play!")
+            if int(c.get_current_turn()['Position'])==game_state._bot_pos:
+                data = []
+                data.append(len(c.hand))
+                print("playing cards...")
+                value=c.get_current_turn()['CardValue']
+                c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh,data))
+                game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
+                c.update_player_info()
+                msg=c.wait_for_message()
+                if msg[0]=='GAME_OVER':
+                    break
 
-        else:
-            msg=c.wait_for_message()
-            if  msg[0]=='CARDS_PLAYED':
-                x=c.get_current_turn()
+            else:
+                msg=c.wait_for_message()
+                if  msg[0]=='CARDS_PLAYED':
+                    x=c.get_current_turn()
 
-                game_state._players[x['Position']-1]._cards_played_into_center+=int(x['CardsDown'])
+                    game_state._players[x['Position']-1]._cards_played_into_center+=int(x['CardsDown'])
+                    
+                    #remove known cards from opponent
+                    if game_state._players[x['Position']-1]._num_each_card[game_state.get_number_val(x['Value'])-1]!=0:
+                        for card in game_state._players[x['Position']-1]._hand:
+                            if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['Value']):
+                                del card
+                        game_state._players[x['Position']-1]._num_each_card=0 
+
+                    print("deciding to call...")
+                    
+                    game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])]._sequence[-1])
+                    if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
+                        print("i call cheat!")
+                        c.play_call()
+                        c.update_player_info()
+                        
+                    else:
+                        print("seems ok enough...")
+                        c.play_pass()
+                        c.update_player_info()
+
                 
-                #remove known cards from opponent
-                if game_state._players[x['Position']-1]._num_each_card[game_state.get_number_val(x['Value'])-1]!=0:
-                    for card in game_state._players[x['Position']-1]._hand:
-                        if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['Value']):
-                            del card
-                    game_state._players[x['Position']-1]._num_each_card=0 
-
-                print("deciding to call...")
-                
-                game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])]._sequence[-1])
-                if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
-                    print("i call cheat!")
-                    c.play_call()
-                    c.update_player_info()
-                    msg=c.wait_for_message()
-                else:
-                    print("seems ok enough...")
-                    c.play_pass()
-                    c.update_player_info()
-
+            msg=c.wait_for_message()
+            called = 1
             if msg[0]=='CALLED':
+                called = 0
                 if msg[1][1]['WasLie']==False:
                     center_pile_collected(game_state,int(msg[1][1]['CallPosition']),msg[1][1]['Cards'])
                 else:
                     x=c.get_current_turn()
                     center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'])
-        msg=c.wait_for_message()
-        if msg[0]=='GAME_OVER':
-            break
-        if msg[0]=='TURN_OVER':
-            pass
-                
+                msg=c.wait_for_message()
+            data.append(called)
+            writer.writerow(data)
+            csvFile.close()
+            if msg[0]=='GAME_OVER':
+                break
+            if msg[0]=='TURN_OVER':
+                pass
+                    
 
 """
 Joins the game.
@@ -103,7 +108,7 @@ Decides which cards to play.
 Considers whether or not to lie by calling decide_bluff.
 Returns a list of cards to play.
 """
-def decide_cards_to_play(value,game_state,bluff_thresh):
+def decide_cards_to_play(value,game_state,bluff_thresh,data):
     print("hand on local: "+str(game_state._bot._hand))
     bot=game_state._bot
     value=bot.get_number_val(value)
@@ -112,17 +117,19 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     cards=bluff_calc.should_bluff(game_state,value,bluff_thresh)
     if cards!=0:
         cards_to_play=cards
+        data.append(game_state._num_cards_center)
+        data.append(game_state._num_played_cards)
     for card in bot._hand:
         if card['Value']==value:
             cards_to_play.append(card)
-                
-    else:
-        for card in bot._hand:
-            if card['Value']==value:
-                cards_to_play.append(card)
+            bot._hand.remove(card)
+    num_r = 0
+    for c in cards_to_play:
+        if c['Value'] == value:
+            num_r += 1
+    data.append(bluff_calc.prob_calculator(value,game_state,5-num_r))
 
     for i in cards_to_play:
-        bot._hand.remove(i)
         game_state._known_center_cards.append(i)
     game_state._num_cards_center+=len(cards_to_play)
 
@@ -131,18 +138,7 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     print("cards played: "+str(cards_to_play))
     return cards_to_play
     
-"""
-Uses bluff.py to determine whether or not to lie.
-If the bot decides to lie, it returns the card to lie with.
-Otherwise, returns False.
-"""
-"""def decide_bluff(bluff_thresh,game_state,card_val):
-    bluff_calc=bluff.BluffCalculator()
-    if bluff_calc.should_bluff(game_state,game_state.get_number_val(card_val)) > bluff_thresh:
-        bluff_card = bluff_calc.pick_card_to_lie_with(game_state)
-        return bluff_card
-    else:
-        return False"""
+
 
 """
 Uses call_bluff to determine whether or not to call bluff on an opponent.
