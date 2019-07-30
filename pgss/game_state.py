@@ -148,15 +148,17 @@ class GameState:
     based on the player number and how many players there are total.
     Assumes the game is using a full deck of 13 values.
     """
-    def calc_seq(self,player_num,total_players):
-        i = player_num
-        seq=[]
-        for x in range(13):
-            if i>13:
-                i=i%13
-            seq.append(i)
-            i+=total_players
-        return seq
+    def calc_seq(self,position,num_players):
+        start = True
+        sequence = [] #The person to the left of the dealer is player 1 and plays an Ace. If one is immidiately to the left of player 1, they are player 2.
+        sequence_num = position
+        
+        while ((position != sequence_num) or (start == True)):
+            sequence.append(sequence_num)
+            sequence_num = (sequence_num + num_players - 1)%13 + 1
+            start = False
+
+        return sequence
 
     def get_number_val(self,card_val):
         if isinstance(card_val,list):
