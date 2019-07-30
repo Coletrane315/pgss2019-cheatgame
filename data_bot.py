@@ -8,7 +8,7 @@ def run_bot():
     with open('data.csv', 'w') as csvFile:
         writer = csv.writer(csvFile)
         
-        bluff_thresh=-1 #temp
+        bluff_thresh=.3 #temp
         call_thresh=.3 #temp
         in_progress=False
         c=cheat.client.Client("My_Cheat_Bot")
@@ -29,7 +29,10 @@ def run_bot():
                 data.append(len(c.hand))
                 print("playing cards...")
                 value=c.get_current_turn()['CardValue']
-                c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh,data))
+                play=decide_cards_to_play(value,game_state,bluff_thresh,data)
+                print(play)
+                print(c.hand)
+                c.play_cards(play)
                 game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
                 c.update_player_info()
                 msg=c.wait_for_message()
@@ -41,19 +44,19 @@ def run_bot():
                 if  msg[0]=='CARDS_PLAYED':
                     x=c.get_current_turn()
 
-                    game_state._players[x['Position']-1]._cards_played_into_center+=int(x['CardsDown'])
+                    game_state._players[int(x['Position'])-1]._cards_played_into_center+=int(x['CardsDown'])
                     
                     #remove known cards from opponent
-                    if game_state._players[x['Position']-1]._num_each_card[game_state.get_number_val(x['Value'])-1]!=0:
-                        for card in game_state._players[x['Position']-1]._hand:
-                            if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['Value']):
+                    if game_state._players[int(x['Position'])-1]._num_each_card[game_state.get_number_val(x['CardValue'])-1]!=0:
+                        for card in game_state._players[int(x['Position'])-1]._hand:
+                            if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['CardValue']):
                                 del card
-                        game_state._players[x['Position']-1]._num_each_card=0 
+                        game_state._players[int(x['Position'])-1]._num_each_card=0 
 
                     print("deciding to call...")
                     
                     game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])]._sequence[-1])
-                    if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
+                    if decide_call_bluff(game_state,int(x['Position']),x['CardValue'],x['CardsDown'],call_thresh):
                         print("i call cheat!")
                         c.play_call()
                         c.update_player_info()
@@ -76,12 +79,12 @@ def run_bot():
                 msg=c.wait_for_message()
             data.append(called)
             writer.writerow(data)
-            csvFile.close()
             if msg[0]=='GAME_OVER':
                 break
             if msg[0]=='TURN_OVER':
                 pass
-                    
+
+        csvFile.close()
 
 """
 Joins the game.
@@ -159,13 +162,14 @@ ie, when someone calls bluff.
 def center_pile_collected(game_state,player_num,turned_cards):
     player_index=player_num-1
     print("i know that player "+str(player_num)+" has "+str(game_state._known_center_cards))
-    game_state._players[player_index].hand.sort(key=lambda x:x['Value'])
+    game_state._players[player_index]._hand.sort(key=lambda x:x['Value'])
     game_state._players[player_index].update()
-    game_state._players[player_index]._num_cards+=len(game_state.num_cards_center)
+    game_state._players[player_index]._num_cards+=(game_state._num_cards_center)
     game_state._num_played_cards+=game_state._num_cards_center
     game_state._num_cards_center=0
     for card in game_state._known_center_cards:
-        game_state._players[player_index]._hand.append(game_state._known_center_cards.pop(card))
+        game_state._players[player_index]._hand.append(card)
+        game_state._known_center_cards.remove(card)
     if game_state._players[player_index]==game_state._bot:
         game_state._bot.count_cycles_until_win_bot()
     for player in game_state._players:
