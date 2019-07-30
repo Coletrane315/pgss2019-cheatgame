@@ -1,4 +1,3 @@
-from pgss import bluff, call_bluff, game_state
 import cheat
 from cheat import client
 import time
@@ -34,29 +33,38 @@ def run_bot():
         c.update_player_info()
 
         state = c.get_current_turn() #dictionary file with current turn info
-
         
         if load_time==True:
             time.sleep(1)
+            c.wait_for_message()
             load_time=False
 
-
-        print(state)
+        #print(state)
         
         if int(state['Position']) == c.position:
             next_turn=state['Position']
+            c.update_player_info()
+            
+            y = random.randint(1,4)
             x=random.randint(0,len(c.hand)-1)
-            c.update_player_info()
+            
             time.sleep(1)
-            c.play_cards(c.hand[1:3])
+            c.play_cards(c.hand[x:x+y])
+            
             time.sleep(1)
             c.update_player_info()
-            print(c.hand)
-            while(next_turn == state['Position']): #will essentially sleep the bot until the next turn
-                time.sleep(1)
-                state = c.get_current_turn()
+            #print(c.hand)
+
+            message = c.wait_for_message()
+            if(message[0] == 'GAME_OVER'):
+                return
+            message = c.wait_for_message()
+            if(message[0] == 'CALLED'):
+                message = c.wait_for_message()
+            
             
         elif int(state['Position'])!= c.position:
+            c.wait_for_message()
             next_turn=state['Position']
             c.play_pass()
             time.sleep(0.1)
@@ -64,8 +72,13 @@ def run_bot():
             while(next_turn == state['Position']):#will essentially sleep the bot until the next turn
                 time.sleep(1)
                 state = c.get_current_turn()
+            message = c.wait_for_message()
+            if(message[0] == 'GAME_OVER'):
+                return
+            if(message[0] == 'CALLED'):
+                message = c.wait_for_message()
 
-        time.sleep(0.5)
+        time.sleep(0.1)
             
 """
 Joins the game.
@@ -84,6 +97,7 @@ def start_game(client):
     c=client
     c.start_game()
     info=c.get_current_turn()
+    c.update_player_info()
     c.hand.sort(key=lambda x:x['Value'])
 
 
@@ -91,5 +105,6 @@ def start_game(client):
 
 
 if __name__ == '__main__':
-    run_bot()
+    while True:
+        run_bot()
     
