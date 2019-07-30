@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='0cd114cd-e99d-402a-9e2f-198a29bbc28e'
+    game_id='bcbb5167-c0fd-4d22-bbf3-56ef3bdf636e'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh= 100 #temp
@@ -35,9 +35,12 @@ def run_bot():
             msg=c.wait_for_message()
             if  msg[0]=='CARDS_PLAYED':
                 x=c.get_current_turn()
+
+                game_state._players[x['Position']-1]._cards_played_into_center+=int(x['CardsDown'])
+                
                 #remove known cards from opponent
                 if game_state._players[x['Position']-1]._num_each_card[game_state.get_number_val(x['Value'])-1]!=0:
-                    for card:game_state._players[x['Position']-1]._hand:
+                    for card in game_state._players[x['Position']-1]._hand:
                         if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['Value']):
                             del card
                     game_state._players[x['Position']-1]._num_each_card=0 
@@ -111,6 +114,8 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
         bot._hand.remove(i)
         game_state._known_center_cards.append(i)
     game_state._num_cards_center+=len(cards_to_play)
+
+    bot._cards_played_into_center+=len(cards_to_play)
                 
     print("cards played: "+str(cards_to_play))
     return cards_to_play
@@ -156,6 +161,8 @@ def center_pile_collected(game_state,player_num,turned_cards):
         game_state._players[player_index]._hand.append(game_state._known_center_cards.pop(card))
     if game_state._players[player_index]==game_state._bot:
         game_state._bot.count_cycles_until_win_bot()
+    for player in game_state._players:
+        player._cards_played_into_center=0
 
 if __name__ == '__main__':
     run_bot()
