@@ -4,17 +4,15 @@ from cheat import client
 
 def run_bot():
 
-<<<<<<< HEAD
     game_id='add52ffd-c383-44ab-9670-df45beee951c'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh= .3 #temp
-=======
+
     game_id='5b364a0d-3c98-4e3b-97d0-141420bd1981'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh= 100 #temp
->>>>>>> 148e509b952c03cb20ab643700375b45e7dde1fb
     call_thresh=.3 #temp
     in_progress=False
     c=cheat.client.Client("My_Cheat_Bot")
@@ -112,12 +110,10 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     cards=bluff_calc.should_bluff(game_state,value,bluff_thresh)
     if cards!=0:
         cards_to_play=cards
-<<<<<<< HEAD
     for card in bot._hand:
         if card['Value']==value:
             cards_to_play.append(card)
                 
-=======
     else:
         for card in bot._hand:
             if card['Value']==value:
@@ -126,7 +122,6 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     for i in cards_to_play:
         bot._hand.remove(i)
         game_state._known_center_cards.append(i)
->>>>>>> 148e509b952c03cb20ab643700375b45e7dde1fb
     game_state._num_cards_center+=len(cards_to_play)
 
     bot._cards_played_into_center+=len(cards_to_play)
