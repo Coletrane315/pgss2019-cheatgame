@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='fc8d5b21-223b-4e7e-afee-8b1996356299'
+    game_id='fc8d5b21-223b-4e7e-afee-8b199635629'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
@@ -61,22 +61,18 @@ def run_bot():
 Joins the game.
 """
 def join_game(client,game_id):
-    c=client
-    c.game_id=game_id
-    c.join_game()
-    c.update_game()
-    c.update_player_info()
+    client.game_id=game_id
+    client.join_game()
+    client.update_game()
+    client.update_player_info()
 
 """
 Starts the game and initializes the variables within game_state.
 """
 def start_game(client):
-    c=client
-    info=c.get_current_turn()
-    c.update_game()
-    c.update_player_info()
-    c.hand.sort(key=lambda x:x['Value'])
-    print("hand: "+str(c.hand))
+    client.update_game()
+    client.update_player_info()
+    client.hand.sort(key=lambda x:x['Value'])
     gs=game_state.GameState(c.players_connected,c.hand,int(c.position))
     return gs
     
