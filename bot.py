@@ -4,10 +4,10 @@ from cheat import client
 
 def run_bot():
 
-    game_id='98790e26-76a7-4306-bde1-c165d277916e'
+    game_id='0cd114cd-e99d-402a-9e2f-198a29bbc28e'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
-    bluff_thresh= -1 #temp
+    bluff_thresh= 100 #temp
     call_thresh=.3 #temp
     in_progress=False
     c=cheat.client.Client("My_Cheat_Bot")
