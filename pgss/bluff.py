@@ -60,22 +60,21 @@ class BluffCalculator:
         def should_bluff_1_card(self, card_turn, game_state, threshold):
                 valueLieWithThreeCopies = self.prob_calculator(card_turn, game_state, 2)
                 valueLieWithTwoCopies = self.prob_calculator(card_turn, game_state, 3)
-                        if valueLieWithThreeCopies > threshold:
-                                return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
-                        elif valueLieWithTwoCopies > threshold:
-                                return self.pick_card_to_lie_with(game_state, 1)
-                        else:
-                                return 0 #we shouldn't lie because there is a high chance opponents will have card(s).
+                if valueLieWithThreeCopies > threshold:
+                        return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
+                elif valueLieWithTwoCopies > threshold:
+                        return self.pick_card_to_lie_with(game_state, 1)
+                else:
+                        return 0 #we shouldn't lie because there is a high chance opponents will have card(s).
          
         
         #calculates whether we should lie if we have two cards by calculating probability of opponent having other 2 copies.       
         def should_bluff_2_card(self, card_turn, game_state, threshold):
                 value = self.prob_calculator(card_turn, game_state, 2)
-                        if value > threshold:
-                                return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
-            
-                        else:
-                                return 0 #indicates we should not lie -- in this instance if we have 3 or 4 of a card
+                if value > threshold:
+                        return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
+                else:
+                        return 0 #indicates we should not lie -- in this instance if we have 3 or 4 of a card
             
         #returns what card we should lie with
         def pick_card_to_lie_with(self, game_state, index):
