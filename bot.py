@@ -61,21 +61,18 @@ def run_bot():
 Joins the game.
 """
 def join_game(client,game_id):
-    c=client
-    c.game_id=game_id
-    c.join_game()
-    c.update_game()
-    c.update_player_info()
+    client.game_id=game_id
+    client.join_game()
+    client.update_game()
+    client.update_player_info()
 
 """
 Starts the game and initializes the variables within game_state.
 """
 def start_game(client):
-    c=client
-    info=c.get_current_turn()
-    c.update_game()
-    c.update_player_info()
-    c.hand.sort(key=lambda x:x['Value'])
+    client.update_game()
+    client.update_player_info()
+    client.hand.sort(key=lambda x:x['Value'])
     print("hand: "+str(c.hand))
     gs=game_state.GameState(c.players_connected,c.hand,int(c.position))
     return gs
