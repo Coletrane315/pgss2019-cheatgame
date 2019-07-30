@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='56cd7505-1356-48a8-bc92-99630a2eddae'
+    game_id='fc8d5b21-223b-4e7e-afee-8b1996356299'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
@@ -26,7 +26,7 @@ def run_bot():
     
     while in_progress==True:
         #start playing the game here
-        c.update_game()
+#        c.update_game()
         c.update_player_info()
         
         if current_turn['Id']!=c.get_current_turn()['Id']:
@@ -40,8 +40,6 @@ def run_bot():
                 c.update_player_info()
 
         try:
-            print(int(c.get_current_turn()['Position'])!=game_state._bot_pos)
-            print(c.get_current_turn()['CardsDown']!=game_state._num_cards_center)
             if int(c.get_current_turn()['Position'])!=game_state._bot_pos and c.get_current_turn()['CardsDown']!=0:
                 print("deciding to call...")
                 x=c.get_current_turn()
@@ -98,9 +96,11 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
             if bot._hand[i]['Value']==value:
                 bot._num_each_card[bot._hand[i]['Value']-1]-=1
                 cards_to_play.append(bot._hand[i])
+        bot._cycles_until_win-=1
 
         bluff_card=decide_bluff(bluff_thresh,game_state,value)
         if bluff_card!=False:
+            bot.__cycles_until_win-=1
             for i in range(len(bot._hand)):
                 if bot._hand[i]==bluff_card:
                     bot._num_each_card[bot._hand[i]['Value']-1]-=1
@@ -130,6 +130,7 @@ Otherwise, returns False.
 """
 def decide_bluff(bluff_thresh,game_state,card_val):
     bluff_calc=bluff.BluffCalculator()
+    print(bluff_calc.should_bluff(game_state,game_state.get_number_val(card_val)))
     if bluff_calc.should_bluff(game_state,game_state.get_number_val(card_val)) > bluff_thresh:
         bluff_card = bluff_calc.pick_card_to_lie_with(game_state)
         return bluff_card
@@ -157,8 +158,11 @@ def center_pile_collected(game_state,player_num):
     for card in game_state._known_center_cards:
         game_state._players[player_num]._hand.append(game_state._known_center_cards.pop(card))
     game_state._players[player_num].hand.sort(key=lambda x:x['Value'])
+    game_state._players[player_num].update()
     game_state._num_played_cards+=game_state.__num_cards_center
     game_state._num_cards_center=0
+    if game_state._players[player_num]==game_state._bot:
+        game_state._bot.count_cycles_until_win_bot()
     #TODO: this looks good but I feel like something is missing.
 
 if __name__ == '__main__':
