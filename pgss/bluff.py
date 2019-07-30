@@ -35,48 +35,48 @@ class BluffCalculator:
                 #How many of card bot has. For people looking at formula on paper, num = k.     
                 num = cards[card_turn - 1]
                 if num == 0:
-                        return should_bluff_0_card(game_state, threshold)
+                        return self.should_bluff_0_card(game_state, threshold)
                 elif num == 1:
-                        return should_bluff_1_card(game_state, threshold) #kicks it to function to calculate when we have 1 card
+                        return self.should_bluff_1_card(game_state, threshold) #kicks it to function to calculate when we have 1 card
 
                 elif num == 2: 
-                        return should_bluff_2_card(game_state, threshold) #kicks it to function to calculate when we have 2 cards
+                        return self.should_bluff_2_card(game_state, threshold) #kicks it to function to calculate when we have 2 cards
 
                 else:
                         return 0; #indicates we should not lie -- in this instance if we have 3 or 4 of a card
         
          #calculates whether we should lie if we have one card by calculating probability of opponent having 2 copies.
         def should_bluff_0_card(self, game_state, threshold):
-                cardsOfLastSeq = get_num_cards_of_last_seq(game_state)
+                cardsOfLastSeq = game_state._bot.get_num_cards_of_last_seq(game_state)
                 while cardsOfLastSeq > 1:    
-                        value = prob_calculator(game_state, cardsOfLastSeq, threshold)
+                        value = self.prob_calculator(game_state, cardsOfLastSeq, threshold)
                         if value >= 0 and value <= 1:
                                 if value > threshold:
                                         return pick_card_to_lie_with(game_state, cardsOfLastSeq) #kicks it to figure out what we should lie with
                         else:
                                     cardsOfLastSeq -= 1 #we shouldn't lie because there is a high chance opponents will have card(s).
-                return pick_card_to_lie_with(game_state, 1)
+                return self.pick_card_to_lie_with(game_state, 1)
              
         #calculates whether we should lie if we have one card by calculating probability of opponent having 2 copies.
         def should_bluff_1_card(self, game_state, threshold):
-                valueLieWithThreeCopies = prob_calculator(game_state, 2)
-                valueLieWithTwoCopies = prob_calculator(game_state, 3)
+                valueLieWithThreeCopies = self.prob_calculator(game_state, 2)
+                valueLieWithTwoCopies = self.prob_calculator(game_state, 3)
                 if value >= 0 and value <= 1:
                         if valueLieWithThreeCopies > threshold:
-                                return pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
+                                return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
                         elif valueLieWithTwoCopies > threshold:
-                                return pick_card_to_lie_with(game_state, 1)
+                                return self.pick_card_to_lie_with(game_state, 1)
                         else:
                                 return 0 #we shouldn't lie because there is a high chance opponents will have card(s).
          
         
         #calculates whether we should lie if we have two cards by calculating probability of opponent having other 2 copies.       
         def should_bluff_2_card(self, game_state, threshold):
-                value = prob_calculator(game_state, 2)
+                value = self.prob_calculator(game_state, 2)
             #CHANGE 0.5 ONCE MACHINE LEARNING DONE
                 if value >= 0 and value <= 1:
                         if value > threshold:
-                                return pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
+                                return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
             
                         else:
                                 return 0 #indicates we should not lie -- in this instance if we have 3 or 4 of a card
@@ -86,7 +86,7 @@ class BluffCalculator:
                 
                 #x is the list of cards we lie with.    
                 x = []    
-                for i in range(0,index)   
+                for i in range(0,index):
                         x.append(game_state._bot.get_last_card_in_seq())
                 return x
 
