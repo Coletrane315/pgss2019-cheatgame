@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='fc8d5b21-223b-4e7e-afee-8b1996356299'
+    game_id='fc8d5b21-223b-4e7e-afee-8b199635629'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
