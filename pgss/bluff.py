@@ -11,7 +11,7 @@ class BluffCalculator:
                 for player in game_state._players:
                         opp_hands.append(player._num_cards)
                 opp_hands.remove(botHandSize)
-                cards = game_state._bot.num_each_cards
+                cards = game_state._bot._num_each_card
                 chance_numerator = 0
                 
                 #Card_turn is value of card. 
@@ -47,7 +47,7 @@ class BluffCalculator:
         
          #calculates whether we should lie if we have one card by calculating probability of opponent having 2 copies.
         def should_bluff_0_card(self, card_turn, game_state, threshold):
-                cardsOfLastSeq = game_state._bot.get_num_cards_of_last_seq(game_state)
+                cardsOfLastSeq = this.get_num_cards_of_last_seq(game_state)
                 while cardsOfLastSeq > 1:    
                         value = self.prob_calculator(card_turn, game_state, cardsOfLastSeq)
                         if value >= 0 and value <= 1:
