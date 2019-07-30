@@ -31,6 +31,15 @@ class CallBluffCalculator:
         j = game_state._bot._cycles_until_win #should be how many turns until bot wins
         i = game_state._num_cards_center #should be number of cards in center pile
 
+        for card in game_state._known_center_cards:
+            if game_state.get_number_val(card['Value'])==card_val:
+                k+=1
+
+        for card in game_state._known_center_cards:
+            for hand in game_state._bot._hand:
+                if (game_state.get_number_val(card['Value']) == game_state.get_number_val(hand['Value'])):
+                    i-=1
+
 	#immediately call bluff if it's the opponent's last card
         if (l==0):
             return 1.0
