@@ -56,7 +56,9 @@ class Player:
     def update(self):
         self.count_num_cards()
         self.count_cycles_until_win()
-        self.num_cards=
+        self._num_cards=0
+        for i in self._num_each_card():
+            self._num_cards+=i
 
     def count_num_cards(self):
         for card in self._hand:
@@ -79,8 +81,8 @@ class Player:
             for j in range(len(self._hand)):
                 if self._sequence[i]==self.get_number_val(self._hand[j]['Value']):
                     self._num_each_card[self.get_number_val(self._hand[j]['Value'])-1]-=1
-                    return self._hand[j]
-
+                    return self._hand.pop(j)
+                
     def get_number_val(self,card_val):
         if isinstance(card_val,list):
             card_val=card_val[1]
