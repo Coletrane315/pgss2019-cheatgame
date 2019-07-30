@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='a5873215-f79a-41f9-884a-b5a66d4596aa'
+    game_id='0f382eca-5ffc-47cf-8b13-9018a0831c8c'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
@@ -22,32 +22,33 @@ def run_bot():
             in_progress=False
     
     game_state=start_game(c)
-    current_turn=0
+    current_turn={'Id':0}
     
     while in_progress==True:
         #start playing the game here
         c.update_game()
         c.update_player_info()
-
-        print("local turn: "+str(current_turn))
-        print("server turn: "+str(c.get_current_turn()))
-        if current_turn!=c.get_current_turn():
+        
+        if current_turn['Id']!=c.get_current_turn()['Id']:
             current_turn=c.get_current_turn()
+            print("time to play!")
             if int(current_turn['Position'])==game_state._bot_pos:
+                print("playing cards...")
                 value=c.get_current_turn()['CardValue']
                 c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh))
                 game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
                 c.update_player_info()
                 
-            if int(current_turn['Position'])!=game_state._bot_pos:
-                x=c.get_current_turn()
-                if 'CardsDown' in x.keys():
-                    if decide_call_bluff(x['Position'],call_thresh,x['CardValue'],x['CardsDown']):
-                        c.play_call()
-                        c.update_player_info()
-                    else:
-                        c.play_pass()
-                        c.update_player_info()
+        if int(current_turn['Position'])!=game_state._bot_pos and c.get_current_turn()['CardsDown']!=game_State._num_cards_center:
+            print("deciding to call...")
+            x=c.get_current_turn()
+            if 'CardsDown' in x.keys():
+                if decide_call_bluff(x['Position'],call_thresh,x['CardValue'],x['CardsDown']):
+                    c.play_call()
+                    c.update_player_info()
+                else:
+                    c.play_pass()
+                    c.update_player_info()
             
 """
 Joins the game.
@@ -83,7 +84,7 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     bot=game_state._bot
     value=bot.get_number_val(value)
     cards_to_play=[]
-    if bot._num_each_card[bot.get_number_val(value)]!=0:
+    if bot._num_each_card[value-1]!=0:
         for i in range(len(bot._hand)):
             if bot._hand[i]['Value']==value:
                 bot._num_each_card[bot._hand[i]['Value']-1]-=1
@@ -98,14 +99,19 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
 
         for i in cards_to_play:
             bot._hand.remove(i)
+            game_state._known_center_cards.append(i)
+        game_state._num_cards_center+=len(cards_to_play)
                     
         print("cards played (truth): "+str(cards_to_play))
         return cards_to_play
+    
     else:
-        print("cards played (forced to lie: "+str(bot.get_last_card_in_seq()))
+        print("card played (forced to lie: "+str(bot.get_last_card_in_seq()))
         x=bot.get_last_card_in_seq()
         cards_to_play.append(x)
         bot._hand.remove(x)
+        game_state._known_center_cards.append(x)
+        game_state._num_cards_center+=len(cards_to_play)
         return cards_to_play
     
 """
@@ -138,10 +144,11 @@ This is called whenever the center pile is collected,
 ie, when someone calls bluff.
 """
 def center_pile_collected(game_state,player_num):
-    for card in game_state.__known_center_cards:
-        game_state.__players[player_num].__hand.append(game_state.__known_center_cards.pop(card))
-    game_state.__num_played_cards+=game_state.__num_cards_center
-    game_state.__num_cards_center=0
+    for card in game_state._known_center_cards:
+        game_state._players[player_num]._hand.append(game_state._known_center_cards.pop(card))
+    game_state._players[player_num].hand.sort(key=lambda x:x['Value'])
+    game_state._num_played_cards+=game_state.__num_cards_center
+    game_state._num_cards_center=0
     #TODO: this looks good but I feel like something is missing.
 
 if __name__ == '__main__':
