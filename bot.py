@@ -4,14 +4,29 @@ from cheat import client
 
 def run_bot():
 
-    game_id='0fd095bf-cf80-4a66-bb61-ea69a106a708'
-    #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
-
     bluff_thresh= .3 #temp
     call_thresh=.3 #temp
     in_progress=False
-    c=cheat.client.Client("My_Cheat_Bot")
-    join_game(c,game_id)
+
+    cmd=input("create game (c) or join game (j)?")
+    if cmd=="c":
+        c=cheat.client.Client("host_bot")
+        c.create_game()
+        x = c.list_games()
+        dictionary = x[-1]
+        game_id = (dictionary['Id'])
+        print(game_id)
+        join_game(c,game_id)
+        input("input anything to start game")
+        c.update_player_info()
+        c.update_game()
+        c.start_game()
+        print(c.players_connected)
+
+    elif cmd=="j":
+        game_id=input("paste game id")
+        c=cheat.client.Client("joined_bot")
+        join_game(c,game_id)
 
     if c.wait_for_message()[0]=='GAME_STARTED':
         game_state=start_game(c)
@@ -87,7 +102,6 @@ def start_game(client):
     client.update_game()
     client.update_player_info()
     client.hand.sort(key=lambda x:x['Value'])
-    print("given hand: " +str(client.hand))
     gs=game_state.GameState(client.players_connected,client.hand,int(client.position)-1)
     return gs
     
@@ -117,18 +131,6 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     print("cards played: "+str(cards_to_play))
     return cards_to_play
     
-"""
-Uses bluff.py to determine whether or not to lie.
-If the bot decides to lie, it returns the card to lie with.
-Otherwise, returns False.
-"""
-"""def decide_bluff(bluff_thresh,game_state,card_val):
-    bluff_calc=bluff.BluffCalculator()
-    if bluff_calc.should_bluff(game_state,game_state.get_number_val(card_val)) > bluff_thresh:
-        bluff_card = bluff_calc.pick_card_to_lie_with(game_state)
-        return bluff_card
-    else:
-        return False"""
 
 """
 Uses call_bluff to determine whether or not to call bluff on an opponent.
@@ -149,9 +151,9 @@ ie, when someone calls bluff.
 def center_pile_collected(game_state,player_num,turned_cards):
     player_index=player_num-1
     print("i know that player "+str(player_num)+" has "+str(game_state._known_center_cards))
-    game_state._players[player_index].hand.sort(key=lambda x:x['Value'])
+    game_state._players[player_index]._hand.sort(key=lambda x:x['Value'])
     game_state._players[player_index].update()
-    game_state._players[player_index]._num_cards+=len(game_state.num_cards_center)
+    game_state._players[player_index]._num_cards+=len(game_state._num_cards_center)
     game_state._num_played_cards+=game_state._num_cards_center
     game_state._num_cards_center=0
     for card in game_state._known_center_cards:
