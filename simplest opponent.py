@@ -6,11 +6,9 @@ import random
 
 def run_bot():
 
-    
-    bluff_thresh=.3 #temp
-    call_thresh=.3 #temp
+
     in_progress=False
-    load_time=True
+    load_time=True #initial load time for the game
     c=cheat.client.Client("Simplest_Opponent")
 
     c.create_game()
@@ -35,7 +33,7 @@ def run_bot():
         c.update_game()
         c.update_player_info()
 
-        state = c.get_current_turn()
+        state = c.get_current_turn() #dictionary file with current turn info
 
         
         if load_time==True:
@@ -54,7 +52,7 @@ def run_bot():
             time.sleep(1)
             c.update_player_info()
             print(c.hand)
-            while(next_turn == state['Position']):
+            while(next_turn == state['Position']): #will essentially sleep the bot until the next turn
                 time.sleep(1)
                 state = c.get_current_turn()
             
@@ -63,7 +61,7 @@ def run_bot():
             c.play_pass()
             time.sleep(0.1)
             c.update_player_info()
-            while(next_turn == state['Position']):
+            while(next_turn == state['Position']):#will essentially sleep the bot until the next turn
                 time.sleep(1)
                 state = c.get_current_turn()
 
