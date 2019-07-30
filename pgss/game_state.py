@@ -135,12 +135,13 @@ class GameState:
         self._known_center_cards=[]
         self._num_played_cards=0
         for i in range(1,num_players+1):
-            if i==bot_player_number:
+            if i==self._bot_pos:
                 x=Player(bot_hand,self.calc_seq(i,num_players))
                 self._bot=x
             else:
                 x=Player([],self.calc_seq(i,num_players))
             self._players.append(x)
+        print(self._bot)
             
 
     """

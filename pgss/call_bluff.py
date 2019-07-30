@@ -27,7 +27,7 @@ class CallBluffCalculator:
         k = game_state._bot._num_each_card[card_val-1] #should be the number of the sought card in own hand
         r = num_cards_played #should be the number of the sought card played by the opponent
         h = len(game_state._bot._hand) #should be own hand size
-        l = len(game_state._players[opponent]._hand) #should be opponent's hand size
+        l = len(game_state._players[opponent-1]._hand) #should be opponent's hand size
         j = game_state._bot._cycles_until_win #should be how many turns until bot wins
         i = game_state._num_cards_center #should be number of cards in center pile
 

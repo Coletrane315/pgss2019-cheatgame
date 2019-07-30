@@ -129,7 +129,10 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     game_state._num_cards_center+=len(cards_to_play)
 
     bot._cards_played_into_center+=len(cards_to_play)
-                
+
+    for card in cards_to_play:
+        game_state._known_center_cards.append(card)
+    
     print("cards played: "+str(cards_to_play))
     return cards_to_play
     
@@ -155,11 +158,12 @@ def center_pile_collected(game_state,player_num,turned_cards):
     print("i know that player "+str(player_num)+" has "+str(game_state._known_center_cards))
     game_state._players[player_index]._hand.sort(key=lambda x:x['Value'])
     game_state._players[player_index].update()
-    game_state._players[player_index]._num_cards+=len(game_state._num_cards_center)
+    game_state._players[player_index]._num_cards+=game_state._num_cards_center
     game_state._num_played_cards+=game_state._num_cards_center
     game_state._num_cards_center=0
     for card in game_state._known_center_cards:
-        game_state._players[player_index]._hand.append(game_state._known_center_cards.pop(card))
+        game_state._players[player_index]._hand.append(game_state._known_center_cards[card]))
+        game_state._known_center_cards
     if game_state._players[player_index]==game_state._bot:
         game_state._bot.count_cycles_until_win_bot()
     for player in game_state._players:
