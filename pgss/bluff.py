@@ -54,27 +54,7 @@ class BluffCalculator:
                         return pick_card_to_lie_with(game_state, 1)
                 else:
                         return 1 #we shouldn't lie because there is a high chance opponents will have card(s).
-'''
-         #calculates whether we should lie if we have one card by calculating probability of opponent having 2 copies.
-        def should_bluff_1_card(self, game_state):
-            value = prob_calculator(game_state, 2)
-            if value >= 0 and value <= 1:
-                    if value > 0.5:
-                            return pick_card_to_lie_with #kicks it to figure out what we should lie with
-            
-            else:
-                return 0 #we shouldn't lie
-                
-        #calculates whether we should lie if we have one card by calculating probability of opponent having 3 copies.
-        def should_bluff_1_card(self, game_state):
-            value = prob_calculator(game_state, 3)
-            if value >= 0 and value <= 1:
-                    if value > 0.5:
-                            return pick_card_to_lie_with #kicks it to figure out what we should lie with
-            
-            else:
-                return 0 #we shouldn't lie
-'''                
+         
         
         #calculates whether we should lie if we have two cards by calculating probability of opponent having other 2 copies.       
         def should_bluff_2_card(self, game_state):
