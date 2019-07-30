@@ -49,7 +49,7 @@ class BluffCalculator:
         def should_bluff_0_card(self, game_state, threshold):
                 cardsOfLastSeq = game_state._bot.get_num_cards_of_last_seq(game_state)
                 while cardsOfLastSeq > 1:    
-                        value = self.prob_calculator(game_state, cardsOfLastSeq, threshold)
+                        value = self.prob_calculator(card_turn, game_state, cardsOfLastSeq)
                         if value >= 0 and value <= 1:
                                 if value > threshold:
                                         return pick_card_to_lie_with(game_state, cardsOfLastSeq) #kicks it to figure out what we should lie with
@@ -59,8 +59,8 @@ class BluffCalculator:
              
         #calculates whether we should lie if we have one card by calculating probability of opponent having 2 copies.
         def should_bluff_1_card(self, game_state, threshold):
-                valueLieWithThreeCopies = self.prob_calculator(game_state, 2)
-                valueLieWithTwoCopies = self.prob_calculator(game_state, 3)
+                valueLieWithThreeCopies = self.prob_calculator(card_turn, game_state, 2)
+                valueLieWithTwoCopies = self.prob_calculator(card_turn, game_state, 3)
                 if value >= 0 and value <= 1:
                         if valueLieWithThreeCopies > threshold:
                                 return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
@@ -72,7 +72,7 @@ class BluffCalculator:
         
         #calculates whether we should lie if we have two cards by calculating probability of opponent having other 2 copies.       
         def should_bluff_2_card(self, game_state, threshold):
-                value = self.prob_calculator(game_state, 2)
+                value = self.prob_calculator(card_turn, game_state, 2)
             #CHANGE 0.5 ONCE MACHINE LEARNING DONE
                 if value >= 0 and value <= 1:
                         if value > threshold:
