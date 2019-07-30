@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    game_id='fc8d5b21-223b-4e7e-afee-8b199635629'
+    game_id='704ea64b-ee28-4ed9-80ac-a8cd28186d62'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh=.3 #temp
@@ -43,6 +43,7 @@ def run_bot():
             if int(c.get_current_turn()['Position'])!=game_state._bot_pos and c.get_current_turn()['CardsDown']!=0:
                 print("deciding to call...")
                 x=c.get_current_turn()
+                game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])]._sequence[-1])
                 if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
                     print("i call cheat!")
                     c.play_call()
@@ -73,7 +74,7 @@ def start_game(client):
     client.update_game()
     client.update_player_info()
     client.hand.sort(key=lambda x:x['Value'])
-    gs=game_state.GameState(c.players_connected,c.hand,int(c.position))
+    gs=game_state.GameState(client.players_connected,client.hand,int(client.position))
     return gs
     
 
@@ -113,9 +114,9 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     else:
         print("card played (forced to lie: "+str(bot.get_last_card_in_seq()))
         x=bot.get_last_card_in_seq()
-        cards_to_play.append(x)
-        bot._hand.remove(x)
-        game_state._known_center_cards.append(x)
+        for card in x:
+            cards_to_play.append(card)
+            game_state._known_center_cards.append(card)
         game_state._num_cards_center+=len(cards_to_play)
         return cards_to_play
     
