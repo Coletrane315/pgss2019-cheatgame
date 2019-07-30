@@ -104,7 +104,7 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
         game_state._known_center_cards.append(i)
     game_state._num_cards_center+=len(cards_to_play)
                 
-    print("cards played (truth): "+str(cards_to_play))
+    print("cards played: "+str(cards_to_play))
     return cards_to_play
     
 """
