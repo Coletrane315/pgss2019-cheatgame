@@ -43,6 +43,10 @@ def run_bot():
             c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh))
             game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
             c.update_player_info()
+            c.hand.sort(key=lambda x:x['Value'])
+            game_state._bot._hand=c.hand
+            game_state._bot.update()
+            game_state._bot.count_cycles_until_win_bot()
             msg=c.wait_for_message()
             if msg[0]=='GAME_OVER':
                 break
@@ -61,7 +65,7 @@ def run_bot():
                             if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['CardValue']):
                                 game_state._players[int(x['Position'])-1]._hand.remove(card)
                                 game_state._players[int(x['Position'])-1]._num_cards-=1
-                        game_state._players[x['Position']-1]._num_each_card=0 
+                        game_state._players[int(x['Position'])-1]._num_each_card=0 
 
                 print("deciding to call...")
                 
@@ -78,10 +82,10 @@ def run_bot():
         msg=c.wait_for_message()
         if msg[0]=='CALLED':
             if msg[1][1]['WasLie']==False:
-                center_pile_collected(game_state,int(msg[1][1]['CallPosition']),msg[1][1]['Cards'])
+                center_pile_collected(game_state,int(msg[1][1]['CallPosition']),msg[1][1]['Cards'],c)
             else:
                 x=c.get_current_turn()
-                center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'])
+                center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'],c)
             msg=c.wait_for_message()
         if msg[0]=='GAME_OVER':
             break
@@ -154,7 +158,7 @@ Updates the various variables in game_state.
 This is called whenever the center pile is collected,
 ie, when someone calls bluff.
 """
-def center_pile_collected(game_state,player_num,turned_cards):
+def center_pile_collected(game_state,player_num,turned_cards,c):
     player_index=player_num-1
     print("i know that player "+str(player_num)+" has "+str(game_state._known_center_cards))
     game_state._players[player_index]._hand.sort(key=lambda x:x['Value'])
@@ -165,6 +169,9 @@ def center_pile_collected(game_state,player_num,turned_cards):
     for card in game_state._known_center_cards:
         game_state._players[player_index]._hand.append(card)
     if game_state._players[player_index]==game_state._bot:
+        c.update_player_info()
+        game_state._bot._hand=c.hand
+        game_state._bot._hand.sort(key=lambda x:x['Value'])
         game_state._bot.count_cycles_until_win_bot()
     for player in game_state._players:
         player._cards_played_into_center=0
