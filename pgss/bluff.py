@@ -50,7 +50,7 @@ class BluffCalculator:
                 while cardsOfLastSeq > 1:    
                         value = self.prob_calculator(card_turn, game_state, cardsOfLastSeq)
                         if value > threshold:
-                                return pick_card_to_lie_with(game_state, cardsOfLastSeq) #kicks it to figure out what we should lie with
+                                return self.pick_card_to_lie_with(game_state, cardsOfLastSeq) #kicks it to figure out what we should lie with
                         else:
                                 cardsOfLastSeq -= 1 #we shouldn't lie because there is a high chance opponents will have card(s).
                 return self.pick_card_to_lie_with(game_state, 1)
@@ -89,7 +89,7 @@ class BluffCalculator:
                 count=0
                 for i in range(len(game_state._bot._sequence)-1,0,-1):
                         for j in range(len(game_state._bot._hand)):
-                                if self._sequence[i]==self.get_number_val(self._hand[j]['Value']):
+                                if game_state._bot._sequence[i]==game_state._bot.get_number_val(game_state._bot._hand[j]['Value']):
                                         count+=1
                         if count!=0:
                                 return count
