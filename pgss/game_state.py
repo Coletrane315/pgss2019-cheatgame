@@ -130,7 +130,7 @@ class GameState:
     """
     def __init__(self,num_players,bot_hand,bot_player_number):
         self._players=[]
-        self._bot_pos=bot_player_number
+        self._bot_pos=bot_player_number+1
         self._num_cards_center=0
         self._known_center_cards=[]
         self._num_played_cards=0
@@ -149,16 +149,14 @@ class GameState:
     Assumes the game is using a full deck of 13 values.
     """
     def calc_seq(self,position,num_players):
-        print(position + " "+num_players)
         start = True
         sequence = [] #The person to the left of the dealer is player 1 and plays an Ace. If one is immidiately to the left of player 1, they are player 2.
-        sequence_num = position-1
+        sequence_num = position
         
         while ((position != sequence_num) or (start == True)):
             sequence.append(sequence_num)
             sequence_num = (sequence_num + num_players - 1)%13 + 1
             start = False
-        print(sequence)
         return sequence
 
     def get_number_val(self,card_val):

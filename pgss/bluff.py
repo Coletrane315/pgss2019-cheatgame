@@ -49,11 +49,10 @@ class BluffCalculator:
                 cardsOfLastSeq = this.get_num_cards_of_last_seq(game_state)
                 while cardsOfLastSeq > 1:    
                         value = self.prob_calculator(card_turn, game_state, cardsOfLastSeq)
-                        if value >= 0 and value <= 1:
-                                if value > threshold:
-                                        return pick_card_to_lie_with(game_state, cardsOfLastSeq) #kicks it to figure out what we should lie with
-                        else:
-                                    cardsOfLastSeq -= 1 #we shouldn't lie because there is a high chance opponents will have card(s).
+                        if value > threshold:
+                                return pick_card_to_lie_with(game_state, cardsOfLastSeq) #kicks it to figure out what we should lie with
+                else:
+                            cardsOfLastSeq -= 1 #we shouldn't lie because there is a high chance opponents will have card(s).
                 return self.pick_card_to_lie_with(game_state, 1)
              
         #calculates whether we should lie if we have one card by calculating probability of opponent having 2 copies.
