@@ -24,6 +24,7 @@ def run_bot():
             c.update_player_info()
             lie = True
             print("time to play!")
+            game_state._players[c.position - 1]._hand = c.hand
             if int(c.get_current_turn()['Position'])==game_state._bot_pos:
                 data = []
                 data.append(len(c.hand))
