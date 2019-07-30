@@ -56,20 +56,23 @@ class Player:
     def update(self):
         self.count_num_cards()
         self.count_cycles_until_win()
+        self.num_cards=
 
     def count_num_cards(self):
         for card in self._hand:
             if isinstance(card,dict):
                 self._num_each_card[card['Value']-1]+=1
 
-    def count_cycles_until_win(self):
+    def count_cycles_until_win_bot(self):
         for i in range(len(self._sequence)-1,0,-1):
             for j in range(len(self._hand)):
                 if self._sequence[i]==self._hand[j]['Value']:
-                    #same for here: check get_val()
                     self._cycles_until_win=i
                 break
             break
+
+    def count_cycles_until_win(self):
+        self._cycles=len(self._hand)/4
 
     def get_last_card_in_seq(self):
         for i in range(len(self._sequence)-1,0,-1):
