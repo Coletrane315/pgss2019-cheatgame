@@ -42,7 +42,6 @@ def run_bot():
         #print(state)
         
         if int(state['Position']) == c.position:
-            next_turn=state['Position']
             c.update_player_info()
             
             y = random.randint(1,4)
@@ -65,13 +64,9 @@ def run_bot():
             
         elif int(state['Position'])!= c.position:
             c.wait_for_message()
-            next_turn=state['Position']
             c.play_pass()
             time.sleep(0.1)
             c.update_player_info()
-            while(next_turn == state['Position']):#will essentially sleep the bot until the next turn
-                time.sleep(1)
-                state = c.get_current_turn()
             message = c.wait_for_message()
             if(message[0] == 'GAME_OVER'):
                 return
