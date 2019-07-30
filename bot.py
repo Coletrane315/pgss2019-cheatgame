@@ -11,7 +11,8 @@ def run_bot():
     cmd=input("create game (c) or join game (j)?")
     if cmd=="c":
         c=cheat.client.Client("host_bot")
-        c.create_game()
+        numplayers=int(input("how many players"))
+        c.create_game(numplayers)
         x = c.list_games()
         dictionary = x[-1]
         game_id = (dictionary['Id'])
@@ -51,18 +52,19 @@ def run_bot():
             if  msg[0]=='CARDS_PLAYED':
                 x=c.get_current_turn()
 
-                game_state._players[x['Position']-1]._cards_played_into_center+=int(x['CardsDown'])
+                game_state._players[int(x['Position'])-1]._cards_played_into_center+=int(x['CardsDown'])
                 
                 #remove known cards from opponent
-                if game_state._players[x['Position']-1]._num_each_card[game_state.get_number_val(x['Value'])-1]!=0:
-                    for card in game_state._players[x['Position']-1]._hand:
-                        if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['Value']):
-                            del card
-                    game_state._players[x['Position']-1]._num_each_card=0 
+                if game_state._players[int(x['Position'])-1]._num_cards!=0:
+                    if game_state._players[int(x['Position'])-1]._num_each_card[game_state.get_number_val(x['Value'])-1]!=0:
+                        for card in game_state._players[int(x['Position'])-1]._hand:
+                            if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['Value']):
+                                del card
+                        game_state._players[x['Position']-1]._num_each_card=0 
 
                 print("deciding to call...")
                 
-                game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])]._sequence[-1])
+                game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])-1]._sequence[-1])
                 if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
                     print("i call cheat!")
                     c.play_call()
