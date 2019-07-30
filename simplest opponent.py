@@ -33,6 +33,7 @@ def run_bot():
         c.update_player_info()
 
         state = c.get_current_turn() #dictionary file with current turn info
+        print(state)
         
         if load_time==True:
             time.sleep(1)
@@ -61,7 +62,7 @@ def run_bot():
             if(message[0] == 'CALLED'):
                 message = c.wait_for_message()
             
-            
+                
         elif int(state['Position'])!= c.position:
             c.wait_for_message()
             c.play_pass()
