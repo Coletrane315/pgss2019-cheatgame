@@ -56,10 +56,11 @@ def run_bot():
                 
                 #remove known cards from opponent
                 if game_state._players[int(x['Position'])-1]._num_cards!=0:
-                    if game_state._players[int(x['Position'])-1]._num_each_card[game_state.get_number_val(x['Value'])-1]!=0:
+                    if game_state._players[int(x['Position'])-1]._num_each_card[game_state.get_number_val(x['CardValue'])-1]!=0:
                         for card in game_state._players[int(x['Position'])-1]._hand:
-                            if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['Value']):
-                                del card
+                            if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['CardValue']):
+                                game_state._players[int(x['Position'])-1]._hand.remove(card)
+                                game_state._players[int(x['Position'])-1]._num_cards-=1
                         game_state._players[x['Position']-1]._num_each_card=0 
 
                 print("deciding to call...")
@@ -162,8 +163,7 @@ def center_pile_collected(game_state,player_num,turned_cards):
     game_state._num_played_cards+=game_state._num_cards_center
     game_state._num_cards_center=0
     for card in game_state._known_center_cards:
-        game_state._players[player_index]._hand.append(game_state._known_center_cards[card]))
-        game_state._known_center_cards
+        game_state._players[player_index]._hand.append(card)
     if game_state._players[player_index]==game_state._bot:
         game_state._bot.count_cycles_until_win_bot()
     for player in game_state._players:
