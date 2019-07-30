@@ -4,15 +4,10 @@ from cheat import client
 
 def run_bot():
 
-    game_id='add52ffd-c383-44ab-9670-df45beee951c'
+    game_id='0fd095bf-cf80-4a66-bb61-ea69a106a708'
     #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
 
     bluff_thresh= .3 #temp
-
-    game_id='5b364a0d-3c98-4e3b-97d0-141420bd1981'
-    #CHANGE GAME ID TO MATCH THE ONE YOU WANT TO JOIN
-
-    bluff_thresh= 100 #temp
     call_thresh=.3 #temp
     in_progress=False
     c=cheat.client.Client("My_Cheat_Bot")
@@ -57,19 +52,19 @@ def run_bot():
                     print("i call cheat!")
                     c.play_call()
                     c.update_player_info()
-                    msg=c.wait_for_message()
                 else:
                     print("seems ok enough...")
                     c.play_pass()
                     c.update_player_info()
 
-            if msg[0]=='CALLED':
-                if msg[1][1]['WasLie']==False:
-                    center_pile_collected(game_state,int(msg[1][1]['CallPosition']),msg[1][1]['Cards'])
-                else:
-                    x=c.get_current_turn()
-                    center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'])
         msg=c.wait_for_message()
+        if msg[0]=='CALLED':
+            if msg[1][1]['WasLie']==False:
+                center_pile_collected(game_state,int(msg[1][1]['CallPosition']),msg[1][1]['Cards'])
+            else:
+                x=c.get_current_turn()
+                center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'])
+            msg=c.wait_for_message()
         if msg[0]=='GAME_OVER':
             break
         if msg[0]=='TURN_OVER':
@@ -92,6 +87,7 @@ def start_game(client):
     client.update_game()
     client.update_player_info()
     client.hand.sort(key=lambda x:x['Value'])
+    print("given hand: " +str(client.hand))
     gs=game_state.GameState(client.players_connected,client.hand,int(client.position)-1)
     return gs
     
@@ -113,15 +109,7 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     for card in bot._hand:
         if card['Value']==value:
             cards_to_play.append(card)
-                
-    else:
-        for card in bot._hand:
-            if card['Value']==value:
-                cards_to_play.append(card)
 
-    for i in cards_to_play:
-        bot._hand.remove(i)
-        game_state._known_center_cards.append(i)
     game_state._num_cards_center+=len(cards_to_play)
 
     bot._cards_played_into_center+=len(cards_to_play)

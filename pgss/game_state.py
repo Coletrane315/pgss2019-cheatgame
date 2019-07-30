@@ -157,10 +157,6 @@ class GameState:
             sequence.append(sequence_num)
             sequence_num = (sequence_num + num_players - 1)%13 + 1
             start = False
-<<<<<<< HEAD
-=======
-
->>>>>>> 148e509b952c03cb20ab643700375b45e7dde1fb
         return sequence
 
     def get_number_val(self,card_val):
