@@ -48,6 +48,7 @@ class Player:
         self._num_each_card=[]
         self._num_cards=0
         self._cycles_until_win=0
+        self._cards_played_into_center=0
         
         #TODO: are cards given sorted, or will we have to sort here?
 
