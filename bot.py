@@ -34,8 +34,16 @@ def run_bot():
         else:
             msg=c.wait_for_message()
             if  msg[0]=='CARDS_PLAYED':
-                print("deciding to call...")
                 x=c.get_current_turn()
+                #remove known cards from opponent
+                if game_state._players[x['Position']-1]._num_each_card[game_state.get_number_val(x['Value'])-1]!=0:
+                    for card:game_state._players[x['Position']-1]._hand:
+                        if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['Value']):
+                            del card
+                    game_state._players[x['Position']-1]._num_each_card=0 
+
+                print("deciding to call...")
+                
                 game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])]._sequence[-1])
                 if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
                     print("i call cheat!")
