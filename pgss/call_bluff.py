@@ -1,5 +1,6 @@
 from pgss import game_state
 from pgss import probfunc
+import math
 
 class CallBluffCalculator:
     """
@@ -34,6 +35,11 @@ class CallBluffCalculator:
             if game_state.get_number_val(card['Value'])==card_val:
                 k+=1
 
+        for card in game_state._known_center_cards:
+            for hand in game_state._bot._hand:
+                if (game_state.get_number_val(card['Value']) == game_state.get_number_val(hand['Value'])):
+                    i-=1
+
 	#immediately call bluff if it's the opponent's last card
         if (l==0):
             return 1.0
@@ -50,8 +56,7 @@ class CallBluffCalculator:
 
         prob=probfunc.ncr(4-k,r)*probfunc.ncr(48-h+k,l-r)/probfunc.ncr(52-h,l)
 
-        return  (1-prob)*(1/i)*((j-2)/20)
-        #TODO: maybe find a better way to represent the risk considering
-        #how close the bot is to winning, currently represented
-        #by ((j-2)/20)
+        return  (1-prob)*(1/i)*(0.001/(0.001+0.001*0.999*math.exp(-0.5*(h-6.5))))*(1/h)
+        #The giant function at the end represents a logistic growth function that
+        #peaks at around 13 cards
 
