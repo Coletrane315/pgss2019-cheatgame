@@ -10,12 +10,14 @@ def run_bot():
     bluff_thresh=.3 #temp
     call_thresh=.3 #temp
     in_progress=False
+    load_time=True
     c=cheat.client.Client("Simplest_Opponent")
 
     c.create_game()
     x = c.list_games()
     dictionary = x[-1]
     game_id = (dictionary['Id'])
+    print(game_id)
 
     join_game(c,game_id)
     #wait for the game to start
@@ -32,24 +34,40 @@ def run_bot():
         #start playing the game here
         c.update_game()
         c.update_player_info()
-        time.sleep(1)
 
         state = c.get_current_turn()
 
-        print(state)
-        print(c.position)
-                
-        if state['Position']== c.position:
-            x=random.randint(0,len(c.hand)-1)
-            c.play_cards(c.hand[x:x+1])
-            c.update_player_info()
-            c.hand
-            
-        elif state['Position']!= c.position:
-            c.play_pass()
-            c.update_player_info()
+        
+        if load_time==True:
+            time.sleep(1)
+            load_time=False
 
-        time.sleep(60)
+
+        print(state)
+        
+        if int(state['Position']) == c.position:
+            next_turn=state['Position']
+            x=random.randint(0,len(c.hand)-1)
+            c.update_player_info()
+            time.sleep(1)
+            c.play_cards(c.hand[1:3])
+            time.sleep(1)
+            c.update_player_info()
+            print(c.hand)
+            while(next_turn == state['Position']):
+                time.sleep(1)
+                state = c.get_current_turn()
+            
+        elif int(state['Position'])!= c.position:
+            next_turn=state['Position']
+            c.play_pass()
+            time.sleep(0.1)
+            c.update_player_info()
+            while(next_turn == state['Position']):
+                time.sleep(1)
+                state = c.get_current_turn()
+
+        time.sleep(0.5)
             
 """
 Joins the game.
