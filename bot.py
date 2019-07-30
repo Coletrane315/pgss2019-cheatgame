@@ -73,7 +73,6 @@ def start_game(client):
     client.update_game()
     client.update_player_info()
     client.hand.sort(key=lambda x:x['Value'])
-    print("hand: "+str(c.hand))
     gs=game_state.GameState(c.players_connected,c.hand,int(c.position))
     return gs
     
