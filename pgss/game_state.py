@@ -58,20 +58,15 @@ class Player:
             
         self.count_num_cards()
         self.count_cycles_until_win()
-
-    def count_cards(self,hand):
-        for i in range(1,13):
-            for cards in hand:
-                if i == int(cards['Value']):
-                    self._num_each_card[i-1] += 1
     
     def update(self):
         self.count_num_cards()
         self.count_cycles_until_win()
 
     def count_num_cards(self):
-        for i in self._num_each_card:
-            i=0
+        self._num_each_card=[]
+        for i in range(13):
+            self._num_each_card.append(0)
         for card in self._hand:
             self._num_each_card[self.get_number_val(card['Value'])-1]+=1
 
@@ -148,7 +143,6 @@ class GameState:
             else:
                 x=Player([],self.calc_seq(i,num_players))
             self._players.append(x)
-        print(self._bot)
             
 
     """
