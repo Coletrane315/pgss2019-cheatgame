@@ -46,20 +46,18 @@ class BluffCalculator:
         
          #calculates whether we should lie if we have one card by calculating probability of opponent having 2 copies.
         def should_bluff_0_card(self, card_turn, game_state, threshold):
-                cardsOfLastSeq = self.get_num_cards_of_last_seq(game_state)
-                while cardsOfLastSeq > 1:    
-                        valueLieWithThreeCopies = 1 - (self.prob_calculator(cardsOfLastSeq, game_state, 2) + self.prob_calculator(cardsOfLastSeq, game_state, 3) + self.prob_calculator(cardsOfLastSeq, game_state, 4))
-                        valueLieWithTwoCopies = 1 - (self.prob_calculator(cardsOfLastSeq, game_state, 3) + self.prob_calculator(cardsOfLastSeq, game_state, 4))
-                        valueLieWithOneCopy = 1 - self.prob_calculator(cardsOfLastSeq, game_state, 4)
-                        if valueLieWithThreeCopies > threshold:
-                                return self.pick_card_to_lie_with(game_state, 3) #kicks it to figure out what we should lie with
-                        elif valueLieWithTwoCopies > threshold:
-                                return self.pick_card_to_lie_with(game_state, 2)
-                        elif valueLieWithOneCopy > threshold:
-                                return self.pick_card_to_lie_with(game_state, 1) 
-                        else:
-                                cardsOfLastSeq -= 1 #we shouldn't lie because there is a high chance opponents will have card(s).
-                return self.pick_card_to_lie_with(game_state, 1)
+                cardsOfLastSeq = self.get_num_cards_of_last_seq(game_state)    
+                valueLieWithThreeCopies = 1 - (self.prob_calculator(card_turn, game_state, 2) + self.prob_calculator(cardsOfLastSeq, game_state, 3) + self.prob_calculator(cardsOfLastSeq, game_state, 4))
+                valueLieWithTwoCopies = 1 - (self.prob_calculator(card_turn, game_state, 3) + self.prob_calculator(cardsOfLastSeq, game_state, 4))
+                valueLieWithOneCopy = 1 - self.prob_calculator(card_turn, game_state, 4)
+                if valueLieWithThreeCopies > threshold:
+                        return self.pick_card_to_lie_with(game_state, 3) #kicks it to figure out what we should lie with
+                elif valueLieWithTwoCopies > threshold:
+                        return self.pick_card_to_lie_with(game_state, 2)
+                elif valueLieWithOneCopy > threshold:
+                        return self.pick_card_to_lie_with(game_state, 1) 
+                else:
+                        return self.pick_card_to_lie_with(game_state, 1) #we shouldn't lie because there is a high chance opponents will have card(s).
              
         #calculates whether we should lie if we have one card by calculating probability of opponent having 2 copies.
         def should_bluff_1_card(self, card_turn, game_state, threshold):
