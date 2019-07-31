@@ -16,16 +16,9 @@ def predict(array):
 
     # load weights into new model
     loaded_model.load_weights("model.h5")
-    print("Loaded model from disk")
 
     Ynew = loaded_model.predict_classes(array)
 
     return Ynew
 
 
-if __name__ == '__main__':
-    temp = np.array([[0, 0, 0, 0, 0, 0]])
-    print(temp.shape)
-
-    Y = predict(temp)
-    print(Y)
