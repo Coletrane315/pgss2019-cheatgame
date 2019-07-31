@@ -44,7 +44,7 @@ def run_bot():
             c.update_player_info()
             c.hand.sort(key=lambda x:x['Value'])
             game_state._bot._hand=c.hand
-            game_state._bot.count_num_cards
+            game_state._bot.count_num_cards()
             game_state._bot.count_cycles_until_win_bot()
             msg=c.wait_for_message()
             if msg[0]=='GAME_OVER':
@@ -57,7 +57,9 @@ def run_bot():
 
                 game_state._num_cards_center+=int(x['CardsDown'])
                 game_state._players[int(x['Position'])-1]._cards_played_into_center+=int(x['CardsDown'])
+                game_state._players[int(x['Position'])-1]._num_cards-=int(x['CardsDown'])
                 game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])-1]._sequence[-1])
+                game_state._bot.count_num_cards()
                 
                 print("deciding to call...")
                 
@@ -166,7 +168,6 @@ def center_pile_collected(game_state,player_num,turned_cards,c):
         for card in game_state._known_center_cards:
             if card not in picked_cards:
                 picked_cards.append(card)
-
         game_state._players[player_index]._hand=[]
         for card in picked_cards:
             game_state._players[player_index]._hand.append(card)
@@ -179,8 +180,8 @@ def center_pile_collected(game_state,player_num,turned_cards,c):
         game_state._bot.count_num_cards()
         game_state._bot.count_cycles_until_win_bot()
     game_state._num_played_cards+=game_state._num_cards_center
-    game_state._num_cards_center=0
     game_state._num_played_cards-=game_state._players[player_index]._cards_played_into_center
+    game_state._num_cards_center=0
     for player in game_state._players:
         player._cards_played_into_center=0
 
