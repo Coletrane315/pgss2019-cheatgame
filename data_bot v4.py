@@ -53,7 +53,7 @@ def run_bot():
                 
                 print("playing cards...")
                 value=c.get_current_turn()['CardValue']
-                c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh))
+                c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh,data,lie))
                 game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
                 c.update_player_info()
                 x=c.get_current_turn()
@@ -146,7 +146,7 @@ Decides which cards to play.
 Considers whether or not to lie by calling decide_bluff.
 Returns a list of cards to play.
 """
-def decide_cards_to_play(value,game_state,bluff_thresh):
+def decide_cards_to_play(value,game_state,bluff_thresh,data,lie):
     print("hand on local: "+str(game_state._bot._hand))
     bot=game_state._bot
     value=bot.get_number_val(value)
