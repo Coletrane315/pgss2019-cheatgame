@@ -76,7 +76,7 @@ class Player:
             break
 
     def count_cycles_until_win(self):
-        self._cycles=len(self._hand)/4
+        self._cycles_until_win=len(self._hand)/4
 
     def get_last_card_in_seq(self):
         for i in reversed(self._sequence):
