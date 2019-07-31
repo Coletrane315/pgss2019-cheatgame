@@ -34,6 +34,8 @@ def run_bot():
     while True:
         #start playing the game here
         c.update_player_info()
+        x=c.get_current_turn()
+
 
         print("time to play!")
         if int(c.get_current_turn()['Position'])==game_state._bot_pos:
@@ -86,17 +88,15 @@ def run_bot():
 
                 #every time an opponent plays, we can't tell if they lied
                 #so we just remove all the info we have on them
-                game_state._players[int(x['Position'])-1]._num_cards-=int(x['CardsDown'])
                 game_state._players[int(x['Position'])-1]._hand=[]
-
 
         msg=c.wait_for_message()
         if msg[0]=='CALLED':
-            x=c.get_current_turn()
+            print(str(x))
+            print(str(msg))
             if msg[1][1]['WasLie']==False:
                 center_pile_collected(game_state,int(msg[1][1]['CallPosition']),msg[1][1]['Cards'],c)
             else:
-                x=c.get_current_turn()
                 center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'],c)
             msg=c.wait_for_message()
         if msg[0]=='GAME_OVER':
@@ -169,8 +169,10 @@ This is called whenever the center pile is collected,
 ie, when someone calls bluff.
 """
 def center_pile_collected(game_state,player_num,turned_cards,c):
+    print("player num "+str(player_num)+" picked up cards")
     player_index=int(player_num)-1
-    if game_state._players[player_index]==game_state._bot:
+    if game_state._players[player_index]!=game_state._bot:
+        #the bot is not the one that picked up the cards
         picked_cards=[]
         for card in turned_cards:
             if card not in picked_cards:
@@ -185,6 +187,7 @@ def center_pile_collected(game_state,player_num,turned_cards,c):
         game_state._players[player_index]._num_cards+=game_state._num_cards_center
         print("opponent now has "+str(game_state._players[player_index]._num_cards)+" cards")
     else:
+        #the bot is the one that picked up the cards
         c.update_player_info()
         game_state._bot._hand=c.hand
         game_state._bot._hand.sort(key=lambda x:game_state.get_number_val(x['Value']))
