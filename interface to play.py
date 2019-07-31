@@ -7,10 +7,10 @@ def run_bot():
 
     in_progress=False
     load_time=True
-    c=cheat.client.Client("Human_Interface")
+    name = input('input username')
+    c=cheat.client.Client(name)
 
     games = c.list_games()
-    print(games)
     game_id = games[-1] ['Id']
 
     join_game(c,game_id)
@@ -41,7 +41,8 @@ def run_bot():
             c.hand.sort(key=lambda x:x['Value'])
             print(c.hand)
 
-            print('You are playing ' + str(c.get_current_turn()['CardValue']))
+            print('You are playing ')
+            print((c.get_current_turn()['CardValue']))
             x = []
             hand = c.hand
             y = int(input("Which number are you playing? Enter -1 to stop choosing "))
@@ -79,7 +80,9 @@ def run_bot():
         elif int(state['Position'])!= c.position:
             message = c.wait_for_message()
             turn = c.get_current_turn()
-            print("Player " + str(turn['Position']) + "played " + str(turn['PlaysMade']) + " " + str(turn['CardValue'][1]))
+            print("Player " + str(turn['Position']) + " played ")
+            print (turn['PlaysMade'])
+            print((turn['CardValue'])
             x = input("Pass or Call?")
             while True:
                 if x == "Pass":
@@ -119,7 +122,18 @@ def join_game(client,game_id):
 """
 Starts the game and initializes the variables within game_state.
 """
-
+def get_number_val(self,card_val):
+    if isinstance(card_val,list):
+        card_val=card_val[1]
+    if card_val=="Ace":
+        return 1
+    elif card_val=="Jack":
+        return 11
+    elif card_val=="Queen":
+        return 12
+    elif card_val=="King":
+        return 13
+    return int(card_val)
     
 
 
