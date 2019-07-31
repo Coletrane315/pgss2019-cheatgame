@@ -9,8 +9,6 @@ def run_bot():
     in_progress=True
     load_time=True #initial load time for the game
     c=cheat.client.Client('Simplest_Opp')
-
-    time.sleep(3)
     x = c.list_games()
     dictionary = x[-1]
     game_id = (dictionary['Id'])
@@ -42,7 +40,10 @@ def run_bot():
             
             y = random.randint(1,4)
             x=random.randint(0,len(c.hand)-1)
-            
+            while x+y>len(c.hand):
+                if(x>0):
+                    x-=1
+                y-=1
             time.sleep(1)
             c.play_cards(c.hand[x:x+y])
             
