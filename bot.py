@@ -45,7 +45,7 @@ def run_bot():
             c.update_player_info()
             c.hand.sort(key=lambda x:x['Value'])
             game_state._bot._hand=c.hand
-            game_state._bot.update()
+            game_state._bot.count_num_cards()
             game_state._bot.count_cycles_until_win_bot()
             msg=c.wait_for_message()
             if msg[0]=='GAME_OVER':
@@ -167,6 +167,8 @@ def center_pile_collected(game_state,player_num,turned_cards,c):
     game_state._num_played_cards+=game_state._num_cards_center
     game_state._num_cards_center=0
     for card in game_state._known_center_cards:
+        game_state._players[player_index]._hand.append(card)
+    for card in turned_cards:
         game_state._players[player_index]._hand.append(card)
     if game_state._players[player_index]==game_state._bot:
         c.update_player_info()
