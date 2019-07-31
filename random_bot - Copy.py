@@ -8,7 +8,7 @@ def run_bot():
 
     in_progress=True
     load_time=True #initial load time for the game
-    c=cheat.client.Client('Simplest_Opp')
+    c=cheat.client.Client('Simplest_Opp2')
     x = c.list_games()
     dictionary = x[-1]
     game_id = (dictionary['Id'])

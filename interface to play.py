@@ -23,6 +23,7 @@ def run_bot():
         #start playing the game here
         c.update_game()
         c.update_player_info()
+        time.sleep(0.5)
         c.hand.sort(key=lambda x:x['Value'])
 
         state = c.get_current_turn()
@@ -36,9 +37,11 @@ def run_bot():
         if int(state['Position']) == c.position:
             next_turn=state['Position']
             c.update_player_info()
+            time.sleep(0.5)
             c.hand.sort(key=lambda x:x['Value'])
             print(c.hand)
 
+            print('You are playing ' + str(c.get_current_turn()['CardValue']))
             x = []
             hand = c.hand
             y = int(input("Which number are you playing? Enter -1 to stop choosing "))
@@ -76,7 +79,7 @@ def run_bot():
         elif int(state['Position'])!= c.position:
             message = c.wait_for_message()
             turn = c.get_current_turn()
-            print(str(turn['PlaysMade']) + " " + str(turn['CardValue'][1]) + "'s were played")
+            print("Player " + str(turn['Position']) + "played " + str(turn['PlaysMade']) + " " + str(turn['CardValue'][1]))
             x = input("Pass or Call?")
             while True:
                 if x == "Pass":
@@ -87,6 +90,7 @@ def run_bot():
                     break
                 else:
                     print("Invalid Input")
+                    x = input("Pass or Call?")
             
             time.sleep(0.1)
             c.update_player_info()

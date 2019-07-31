@@ -41,21 +41,18 @@ class Player:
     Find the last card in the sequence that the player has in hand, and
     the index of that card in sequence is how many turns until victory.
     """
-    def __init__(self,hand,sequence):
+    def __init__(self,hand,sequence,num_cards):
         self._hand=hand
         self._sequence=sequence
-        self._num_cards=len(self._hand)
+        self._num_cards=num_cards
         self._num_each_card=[]
-        self._num_cards=0
         self._cycles_until_win=0
         self._cards_played_into_center=0
-        
-        #TODO: are cards given sorted, or will we have to sort here?
 
         #Simply makes __num_each_card a list of 13 0s to add onto later
         for i in range(13):
             self._num_each_card.append(0)
-            
+
         self.count_num_cards()
         self.count_cycles_until_win()
     
@@ -107,7 +104,7 @@ class GameState:
     _players:[]
 
     #player object which is the bot, also represented in __players
-    _bot:Player([],[])
+    _bot:Player([],[],0)
 
     #position of the bot
     _bot_pos:0
@@ -136,12 +133,13 @@ class GameState:
         self._num_cards_center=0
         self._known_center_cards=[]
         self._num_played_cards=0
+        cards_per_player=52/num_players
         for i in range(1,num_players+1):
             if i==self._bot_pos:
-                x=Player(bot_hand,self.calc_seq(i,num_players))
+                x=Player(bot_hand,self.calc_seq(i,num_players),len(bot_hand))
                 self._bot=x
             else:
-                x=Player([],self.calc_seq(i,num_players))
+                x=Player([],self.calc_seq(i,num_players),cards_per_player)
             self._players.append(x)
             
 

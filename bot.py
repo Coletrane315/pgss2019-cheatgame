@@ -44,7 +44,7 @@ def run_bot():
             c.update_player_info()
             c.hand.sort(key=lambda x:x['Value'])
             game_state._bot._hand=c.hand
-            game_state._bot.count_num_cards
+            game_state._bot.count_num_cards()
             game_state._bot.count_cycles_until_win_bot()
             msg=c.wait_for_message()
             if msg[0]=='GAME_OVER':
@@ -55,18 +55,12 @@ def run_bot():
             if  msg[0]=='CARDS_PLAYED':
                 x=c.get_current_turn()
 
+                game_state._num_cards_center+=int(x['CardsDown'])
                 game_state._players[int(x['Position'])-1]._cards_played_into_center+=int(x['CardsDown'])
+                game_state._players[int(x['Position'])-1]._num_cards-=int(x['CardsDown'])
                 game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])-1]._sequence[-1])
+                game_state._bot.count_num_cards()
                 
-                #remove known cards from opponent
-                if game_state._players[int(x['Position'])-1]._num_cards!=0:
-                    if game_state._players[int(x['Position'])-1]._num_each_card[game_state.get_number_val(x['CardValue'])-1]!=0:
-                        for card in game_state._players[int(x['Position'])-1]._hand:
-                            if game_state.get_number_val(card['Value'])==game_state.get_number_val(x['CardValue']):
-                                game_state._players[int(x['Position'])-1]._hand.remove(card)
-                                game_state._players[int(x['Position'])-1]._num_cards-=1
-                        game_state._players[int(x['Position'])-1]._num_each_card[game_state.get_number_val(x['CardValue'])-1]=0 
-
                 print("deciding to call...")
                 
                 if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
@@ -77,6 +71,12 @@ def run_bot():
                     print("seems ok enough...")
                     c.play_pass()
                     c.update_player_info()
+
+                #every time an opponent plays, we can't tell if they lied
+                #so we just remove all the info we have on them
+                game_state._players[int(x['Position'])-1]._num_cards-=int(x['CardsDown'])
+                game_state._players[int(x['Position'])-1]._hand=[]
+
 
         msg=c.wait_for_message()
         if msg[0]=='CALLED':
@@ -160,33 +160,28 @@ ie, when someone calls bluff.
 def center_pile_collected(game_state,player_num,turned_cards,c):
     player_index=int(player_num)-1
     print("i know that player "+str(player_num)+" has "+str(game_state._known_center_cards))
-    have_card=False
-    for card in turned_cards:
-        have_card=False
-        for known_card in game_state._players[player_index]._hand:
-            if card==known_card:
-                have_card=True
-        if have_card==False:
+    if player_num!=game_state._bot_pos:
+        picked_cards=[]
+        for card in turned_cards:
+            if card not in picked_cards:
+                picked_cards.append(card)
+        for card in game_state._known_center_cards:
+            if card not in picked_cards:
+                picked_cards.append(card)
+        game_state._players[player_index]._hand=[]
+        for card in picked_cards:
             game_state._players[player_index]._hand.append(card)
-    for card in game_state._known_center_cards:
-        have_card=False
-        for known_card in game_state._players[player_index]._hand:
-            if card==known_card:
-                have_card=True
-        if have_card==False:
-            game_state._players[player_index]._hand.append(card)
-    game_state._players[player_index]._hand.sort(key=lambda x:game_state.get_number_val(x['Value']))
-    game_state._players[player_index].count_num_cards()
-    game_state._players[player_index]._num_cards+=(game_state._num_cards_center+len(turned_cards))
-    game_state._num_played_cards+=game_state._num_cards_center
-    game_state._num_cards_center=0
-    game_state._num_played_cards-=game_state._players[player_index]._cards_played_into_center
-    if game_state._players[player_index]==game_state._bot:
+        game_state._players[player_index]._hand.sort(key=lambda x:game_state.get_number_val(x['Value']))
+        game_state._players[player_index]._num_cards+=game_state._num_cards_center
+    else:
         c.update_player_info()
         game_state._bot._hand=c.hand
         game_state._bot._hand.sort(key=lambda x:game_state.get_number_val(x['Value']))
         game_state._bot.count_num_cards()
         game_state._bot.count_cycles_until_win_bot()
+    game_state._num_played_cards+=game_state._num_cards_center
+    game_state._num_played_cards-=game_state._players[player_index]._cards_played_into_center
+    game_state._num_cards_center=0
     for player in game_state._players:
         player._cards_played_into_center=0
 
