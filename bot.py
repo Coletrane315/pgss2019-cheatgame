@@ -55,6 +55,7 @@ def run_bot():
             if  msg[0]=='CARDS_PLAYED':
                 x=c.get_current_turn()
 
+                game_state._num_cards_center+=int(x['CardsDown'])
                 game_state._players[int(x['Position'])-1]._cards_played_into_center+=int(x['CardsDown'])
                 game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])-1]._sequence[-1])
                 
@@ -158,24 +159,28 @@ def center_pile_collected(game_state,player_num,turned_cards,c):
     player_index=int(player_num)-1
     print("i know that player "+str(player_num)+" has "+str(game_state._known_center_cards))
     if player_num!=game_state._bot_pos:
-        print("opponent is picking up cards")
-        game_state._players[player_index]._hand=[]
+        picked_cards=[]
         for card in turned_cards:
-            game_state._players[player_index]._hand.append(card)
+            if card not in picked_cards:
+                picked_cards.append(card)
         for card in game_state._known_center_cards:
+            if card not in picked_cards:
+                picked_cards.append(card)
+
+        game_state._players[player_index]._hand=[]
+        for card in picked_cards:
             game_state._players[player_index]._hand.append(card)
         game_state._players[player_index]._hand.sort(key=lambda x:game_state.get_number_val(x['Value']))
-        game_state._players[player_index]._num_cards+=(game_state._num_cards_center+len(turned_cards))
-        game_state._num_played_cards+=game_state._num_cards_center
-        game_state._num_cards_center=0
-        game_state._num_played_cards-=game_state._players[player_index]._cards_played_into_center
+        game_state._players[player_index]._num_cards+=game_state._num_cards_center
     else:
-        print("bot is picking up cards")
         c.update_player_info()
         game_state._bot._hand=c.hand
         game_state._bot._hand.sort(key=lambda x:game_state.get_number_val(x['Value']))
         game_state._bot.count_num_cards()
         game_state._bot.count_cycles_until_win_bot()
+    game_state._num_played_cards+=game_state._num_cards_center
+    game_state._num_cards_center=0
+    game_state._num_played_cards-=game_state._players[player_index]._cards_played_into_center
     for player in game_state._players:
         player._cards_played_into_center=0
 
