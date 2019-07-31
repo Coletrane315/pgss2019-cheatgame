@@ -41,6 +41,7 @@ def run_bot():
             c.hand.sort(key=lambda x:x['Value'])
             print(c.hand)
 
+            print('You are playing ' + str(c.get_current_turn()['CardValue']))
             x = []
             hand = c.hand
             y = int(input("Which number are you playing? Enter -1 to stop choosing "))
