@@ -22,15 +22,16 @@ def run_bot():
         while True:
             #start playing the game here
             c.update_player_info()
-            lie = True
+            lie = []
             print("time to play!")
-            game_state._players[c.position - 1]._hand = c.hand
+            game_state._bot._hand = c.hand
+            game_state._bot.count_cards(c.hand)
             if int(c.get_current_turn()['Position'])==game_state._bot_pos:
                 data = []
                 data.append(len(c.hand))
                 print("playing cards...")
                 value=c.get_current_turn()['CardValue']
-                play=decide_cards_to_play(value,game_state,bluff_thresh,data)
+                play=decide_cards_to_play(value,game_state,bluff_thresh,data,lie)
                 print(play)
                 print(c.hand)
                 c.play_cards(play)
@@ -38,10 +39,14 @@ def run_bot():
                 c.update_player_info()
                 msg=c.wait_for_message()
                 if msg[0]=='GAME_OVER':
+                    print('Gave Over')
                     break
 
             else:
                 msg=c.wait_for_message()
+                if msg[0]=='GAME_OVER':
+                    print('Gave Over')
+                    break
                 if  msg[0]=='CARDS_PLAYED':
                     x=c.get_current_turn()
 
@@ -78,9 +83,11 @@ def run_bot():
                     x=c.get_current_turn()
                     center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'])
                 msg=c.wait_for_message()
-            data.append(called)
-            writer.writerow(data)
+            if(len(lie) != 0):
+                data.append(called)
+                writer.writerow(data)
             if msg[0]=='GAME_OVER':
+                print('Gave Over')
                 break
             if msg[0]=='TURN_OVER':
                 pass
@@ -112,7 +119,7 @@ Decides which cards to play.
 Considers whether or not to lie by calling decide_bluff.
 Returns a list of cards to play.
 """
-def decide_cards_to_play(value,game_state,bluff_thresh,data):
+def decide_cards_to_play(value,game_state,bluff_thresh,data,lie):
     print("hand on local: "+str(game_state._bot._hand))
     bot=game_state._bot
     value=bot.get_number_val(value)
@@ -120,6 +127,7 @@ def decide_cards_to_play(value,game_state,bluff_thresh,data):
     bluff_calc=bluff.BluffCalculator()
     cards=bluff_calc.should_bluff(game_state,value,bluff_thresh)
     if cards!=0:
+        lie.append(0)
         cards_to_play=cards
         data.append(game_state._num_cards_center)
         data.append(game_state._num_played_cards)
@@ -127,11 +135,12 @@ def decide_cards_to_play(value,game_state,bluff_thresh,data):
         if card['Value']==value:
             cards_to_play.append(card)
             bot._hand.remove(card)
-    num_r = 0
-    for c in cards_to_play:
-        if c['Value'] == value:
-            num_r += 1
-    data.append(bluff_calc.prob_calculator(value,game_state,5-num_r))
+    if len(cards) != 0:
+        num_r = 0
+        for c in cards:
+            if c['Value'] == value:
+                num_r += 1
+        data.append(bluff_calc.prob_calculator(value,game_state,5-num_r))
 
     for i in cards_to_play:
         game_state._known_center_cards.append(i)

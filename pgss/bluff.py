@@ -23,7 +23,7 @@ class BluffCalculator:
                         #Like, if you want to use this function to calculate the probability of an opponent having two Aces
                         #r = 2.
                         chance_numerator += probfunc.ncr(48-botHandSize+(4-n), hand - r)*probfunc.ncr(n, r)
-                chance = 1- chance_numerator/ probfunc.ncr(52-botHandSize, hand)
+                chance = chance_numerator/ probfunc.ncr(52-botHandSize, hand)
                 return chance           
         #precondition: we have x number of cards and need to find out if we should lie or not 
         #postcondition: returns the card that we should lie with (0 means we shouldn't lie)
@@ -48,17 +48,23 @@ class BluffCalculator:
         def should_bluff_0_card(self, card_turn, game_state, threshold):
                 cardsOfLastSeq = self.get_num_cards_of_last_seq(game_state)
                 while cardsOfLastSeq > 1:    
-                        value = self.prob_calculator(card_turn, game_state, cardsOfLastSeq)
-                        if value > threshold:
-                                return self.pick_card_to_lie_with(game_state, cardsOfLastSeq) #kicks it to figure out what we should lie with
+                        valueLieWithThreeCopies = 1 - (self.prob_calculator(cardsOfLastSeq, game_state, 2) + self.prob_calculator(cardsOfLastSeq, game_state, 3) + self.prob_calculator(cardsOfLastSeq, game_state, 4))
+                        valueLieWithTwoCopies = 1 - (self.prob_calculator(cardsOfLastSeq, game_state, 3) + self.prob_calculator(cardsOfLastSeq, game_state, 4))
+                        valueLieWithOneCopy = 1 - self.prob_calculator(cardsOfLastSeq, game_state, 4)
+                        if valueLieWithThreeCopies > threshold:
+                                return self.pick_card_to_lie_with(game_state, 3) #kicks it to figure out what we should lie with
+                        elif valueLieWithTwoCopies > threshold:
+                                return self.pick_card_to_lie_with(game_state, 2)
+                        elif valueLieWithOneCopy > threshold:
+                                return self.pick_card_to_lie_with(game_state, 1) 
                         else:
                                 cardsOfLastSeq -= 1 #we shouldn't lie because there is a high chance opponents will have card(s).
                 return self.pick_card_to_lie_with(game_state, 1)
              
         #calculates whether we should lie if we have one card by calculating probability of opponent having 2 copies.
         def should_bluff_1_card(self, card_turn, game_state, threshold):
-                valueLieWithThreeCopies = self.prob_calculator(card_turn, game_state, 2)
-                valueLieWithTwoCopies = self.prob_calculator(card_turn, game_state, 3)
+                valueLieWithThreeCopies = 1 - (self.prob_calculator(card_turn, game_state, 2) + self.prob_calculator(card_turn, game_state, 3))
+                valueLieWithTwoCopies = 1 - self.prob_calculator(card_turn, game_state, 3)
                 if valueLieWithThreeCopies > threshold:
                         return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
                 elif valueLieWithTwoCopies > threshold:
@@ -69,9 +75,9 @@ class BluffCalculator:
         
         #calculates whether we should lie if we have two cards by calculating probability of opponent having other 2 copies.       
         def should_bluff_2_card(self, card_turn, game_state, threshold):
-                value = self.prob_calculator(card_turn, game_state, 2)
+                value = 1 - self.prob_calculator(card_turn, game_state, 2)
                 if value > threshold:
-                        return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with    
+                        return self.pick_card_to_lie_with(game_state, 1) #kicks it to figure out what we should lie with    
                 else:
                         return 0 #indicates we should not lie -- in this instance if we have 3 or 4 of a card
             

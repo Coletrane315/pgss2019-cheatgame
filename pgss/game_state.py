@@ -59,6 +59,12 @@ class Player:
         self.count_num_cards()
         self.count_cycles_until_win()
 
+    def count_cards(self,hand):
+        for i in range(1,13):
+            for cards in hand:
+                if i == int(cards['Value']):
+                    self._num_each_card[i-1] += 1
+    
     def update(self):
         self.count_num_cards()
         self.count_cycles_until_win()
@@ -80,9 +86,9 @@ class Player:
         self._cycles=len(self._hand)/4
 
     def get_last_card_in_seq(self):
-        for i in range(len(self._sequence)-1,0,-1):
-            for j in range(len(self._hand)):
-                if self._sequence[i]==self.get_number_val(self._hand[j]['Value']):
+        for i in reversed(self._sequence):
+            for j in range(0,len(self._hand)):
+                if i==self.get_number_val(self._hand[j]['Value']):
                     self._num_each_card[self.get_number_val(self._hand[j]['Value'])-1]-=1
                     return self._hand.pop(j)
                 
