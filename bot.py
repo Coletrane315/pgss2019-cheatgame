@@ -45,7 +45,6 @@ def run_bot():
             game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
             c.update_player_info()
             x=c.get_current_turn()
-            game_state._num_cards_center+=int(x['CardsDown'])
             c.hand.sort(key=lambda x:x['Value'])
             game_state._bot._hand=c.hand
             game_state._bot.count_num_cards()
@@ -60,6 +59,8 @@ def run_bot():
         #not bot's turn
             
             msg=c.wait_for_message()
+            if msg[0]=='GAME_OVER':
+                break
             if  msg[0]=='CARDS_PLAYED':
             #opponent played something
                 
@@ -144,6 +145,7 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
             cards_to_play.append(card)
             
     bot._cards_played_into_center+=len(cards_to_play)
+    game_state._num_cards_center+=len(cards_to_play)
 
     for card in cards_to_play:
         game_state._known_center_cards.append(card)

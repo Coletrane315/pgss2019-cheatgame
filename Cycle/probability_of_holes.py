@@ -29,7 +29,7 @@ class SeqProbabilityCalculator:
         max_holes = hand_size-int(math.ceil(hand_size/4))
         multiplier = 1
         for num in range(0,max_holes+1):
-            probability.append(multiplier * self.calculateEvents(num,max_holes,hand_size)/self.combination(52,hand_size))
+            probability.insert(0,multiplier * self.calculateEvents(num,max_holes,hand_size)/self.combination(52,hand_size))
         sum = 0 
         for i in probability:
             sum = sum + i

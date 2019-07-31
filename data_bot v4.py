@@ -1,21 +1,23 @@
 from pgss import bluff, call_bluff, game_state
+from Cycle import probability_of_holes
 import cheat
 from cheat import client
 import csv
 import time
 
 def run_bot():
-    with open('data_real_people.csv', 'w') as csvFile:
+    
+    with open('data.csv','a') as csvFile:
         writer = csv.writer(csvFile)
-        
-        bluff_thresh= .3 #temp
+        numplayers=2
+        calc = probability_of_holes.SeqProbabilityCalculator()
+        bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
         call_thresh=.3 #temp
         in_progress=False
 
         cmd=input("create game (c) or join game (j)?")
         if cmd=="c":
             c=cheat.client.Client("host_bot")
-            numplayers=int(input("how many players"))
             c.create_game(numplayers)
             x = c.list_games()
             dictionary = x[-1]
@@ -57,7 +59,6 @@ def run_bot():
                 game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
                 c.update_player_info()
                 x=c.get_current_turn()
-                game_state._num_cards_center+=int(x['CardsDown'])
                 c.hand.sort(key=lambda x:x['Value'])
                 game_state._bot._hand=c.hand
                 game_state._bot.count_num_cards()
@@ -72,6 +73,9 @@ def run_bot():
             #not bot's turn
                 
                 msg=c.wait_for_message()
+                if msg[0]=='GAME_OVER':
+                    break
+
                 if  msg[0]=='CARDS_PLAYED':
                 #opponent played something
                     
@@ -154,6 +158,7 @@ def decide_cards_to_play(value,game_state,bluff_thresh,data,lie):
     bluff_calc=bluff.BluffCalculator()
     cards=bluff_calc.should_bluff(game_state,value,bluff_thresh)
     if cards!=0:
+        lie.append(0)
         cards_to_play=cards
         data.append(game_state._num_cards_center)
         data.append(game_state._num_played_cards)
@@ -168,6 +173,7 @@ def decide_cards_to_play(value,game_state,bluff_thresh,data,lie):
         data.append(bluff_calc.prob_calculator(value,game_state,5-num_r))
             
     bot._cards_played_into_center+=len(cards_to_play)
+    game_state._num_cards_center+=len(cards_to_play)
 
     for card in cards_to_play:
         game_state._known_center_cards.append(card)

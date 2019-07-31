@@ -59,7 +59,7 @@ class CallBluffCalculator:
 
         prob=probfunc.ncr(4-k,r)*probfunc.ncr(48-h+k,l-r)/probfunc.ncr(52-h,l)
 
-        return  (1-prob)*(1/(i+1))*(0.001/(0.001+0.001*0.999*math.exp(-0.5*(h-6.5))))*(1/(h+1))
+        return  (1-prob)*(1/((i+0.1)))*(0.001/(0.001+0.001*0.999*math.exp(-0.5*(h-6.5))))*(1/(h+0.1))
         #The giant function at the end represents a logistic growth function that
         #peaks at around 13 cards
 
