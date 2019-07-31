@@ -160,10 +160,21 @@ ie, when someone calls bluff.
 def center_pile_collected(game_state,player_num,turned_cards,c):
     player_index=int(player_num)-1
     print("i know that player "+str(player_num)+" has "+str(game_state._known_center_cards))
+    have_card=False
     for card in turned_cards:
-        game_state._players[player_index]._hand.append(card)
+        have_card=False
+        for known_card in game_state._players[player_index]._hand:
+            if card==known_card:
+                have_card=True
+        if have_card==False:
+            game_state._players[player_index]._hand.append(card)
     for card in game_state._known_center_cards:
-        game_state._players[player_index]._hand.append(card)
+        have_card=False
+        for known_card in game_state._players[player_index]._hand:
+            if card==known_card:
+                have_card=True
+        if have_card==False:
+            game_state._players[player_index]._hand.append(card)
     game_state._players[player_index]._hand.sort(key=lambda x:game_state.get_number_val(x['Value']))
     game_state._players[player_index].count_num_cards()
     game_state._players[player_index]._num_cards+=(game_state._num_cards_center+len(turned_cards))
