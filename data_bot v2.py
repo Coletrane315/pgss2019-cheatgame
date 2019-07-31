@@ -13,12 +13,12 @@ def run_bot():
         call_thresh=.3 #temp
         in_progress=False
         c=cheat.client.Client("My_Cheat_Bot")
-        c.create_game(3)
+        c.create_game(4)
         game_list = c.list_games()
         game_id= game_list[-1]['Id']
         join_game(c,game_id)
 
-        while c.players_connected != 3:
+        while c.players_connected != 4:
             c.update_game()
             time.sleep(1)
         c.start_game()
