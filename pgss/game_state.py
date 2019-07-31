@@ -127,9 +127,9 @@ class GameState:
     The bot's hand, bot_hand
     Which player number is the bot, bot_player_number
     """
-    def __init__(self,num_players,bot_hand,bot_player_number):
+    def __init__(self,num_players,bot_hand,bot_index):
         self._players=[]
-        self._bot_pos=bot_player_number+1
+        self._bot_pos=bot_index+1
         self._num_cards_center=0
         self._known_center_cards=[]
         self._num_played_cards=0

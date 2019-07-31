@@ -42,22 +42,34 @@ def run_bot():
             c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh))
             game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
             c.update_player_info()
+            x=c.get_current_turn()
+            game_state._num_cards_center+=int(x['CardsDown'])
             c.hand.sort(key=lambda x:x['Value'])
             game_state._bot._hand=c.hand
             game_state._bot.count_num_cards()
+            game_state._bot._num_cards=len(game_state._bot._hand)
+            print("now my hand is: "+str(game_state._bot._hand))
             game_state._bot.count_cycles_until_win_bot()
             msg=c.wait_for_message()
             if msg[0]=='GAME_OVER':
                 break
 
         else:
+        #not bot's turn
+            
             msg=c.wait_for_message()
             if  msg[0]=='CARDS_PLAYED':
+            #opponent played something
+                
                 x=c.get_current_turn()
 
                 game_state._num_cards_center+=int(x['CardsDown'])
+                print("put "+str(x['CardsDown'])+" in")
+                print("now center pile has "+str(game_state._num_cards_center)+" cards")
                 game_state._players[int(x['Position'])-1]._cards_played_into_center+=int(x['CardsDown'])
+                print("opponent had "+str(game_state._players[int(x['Position'])-1]._num_cards)+" cards")
                 game_state._players[int(x['Position'])-1]._num_cards-=int(x['CardsDown'])
+                print("opponent now has "+str(game_state._players[int(x['Position'])-1]._num_cards)+" cards")
                 game_state._players[int(x['Position'])-1]._sequence.append(game_state._players[int(x['Position'])-1]._sequence[-1])
                 game_state._bot.count_num_cards()
                 
@@ -80,6 +92,7 @@ def run_bot():
 
         msg=c.wait_for_message()
         if msg[0]=='CALLED':
+            x=c.get_current_turn()
             if msg[1][1]['WasLie']==False:
                 center_pile_collected(game_state,int(msg[1][1]['CallPosition']),msg[1][1]['Cards'],c)
             else:
@@ -129,9 +142,7 @@ def decide_cards_to_play(value,game_state,bluff_thresh):
     for card in bot._hand:
         if card['Value']==value:
             cards_to_play.append(card)
-
-    game_state._num_cards_center+=len(cards_to_play)
-
+            
     bot._cards_played_into_center+=len(cards_to_play)
 
     for card in cards_to_play:
@@ -159,8 +170,7 @@ ie, when someone calls bluff.
 """
 def center_pile_collected(game_state,player_num,turned_cards,c):
     player_index=int(player_num)-1
-    print("i know that player "+str(player_num)+" has "+str(game_state._known_center_cards))
-    if player_num!=game_state._bot_pos:
+    if game_state._players[player_index]==game_state._bot:
         picked_cards=[]
         for card in turned_cards:
             if card not in picked_cards:
@@ -173,12 +183,15 @@ def center_pile_collected(game_state,player_num,turned_cards,c):
             game_state._players[player_index]._hand.append(card)
         game_state._players[player_index]._hand.sort(key=lambda x:game_state.get_number_val(x['Value']))
         game_state._players[player_index]._num_cards+=game_state._num_cards_center
+        print("opponent now has "+str(game_state._players[player_index]._num_cards)+" cards")
     else:
         c.update_player_info()
         game_state._bot._hand=c.hand
         game_state._bot._hand.sort(key=lambda x:game_state.get_number_val(x['Value']))
         game_state._bot.count_num_cards()
+        game_state._bot._num_cards=len(game_state._bot._hand)
         game_state._bot.count_cycles_until_win_bot()
+        print("my hand is now "+str(game_state._bot._num_cards)+" cards")
     game_state._num_played_cards+=game_state._num_cards_center
     game_state._num_played_cards-=game_state._players[player_index]._cards_played_into_center
     game_state._num_cards_center=0
