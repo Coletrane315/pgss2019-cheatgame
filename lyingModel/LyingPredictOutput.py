@@ -15,7 +15,6 @@ class PredictOutput:
 
         # load weights into new model
         loaded_model.load_weights("model.h5")
-        print("Loaded model from disk")
 
         Xnew = array
         Ynew = loaded_model.predict_classes(Xnew)
