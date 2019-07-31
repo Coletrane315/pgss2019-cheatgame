@@ -23,6 +23,7 @@ def run_bot():
         #start playing the game here
         c.update_game()
         c.update_player_info()
+        time.sleep(0.5)
         c.hand.sort(key=lambda x:x['Value'])
 
         state = c.get_current_turn()
@@ -36,6 +37,7 @@ def run_bot():
         if int(state['Position']) == c.position:
             next_turn=state['Position']
             c.update_player_info()
+            time.sleep(0.5)
             c.hand.sort(key=lambda x:x['Value'])
             print(c.hand)
 
