@@ -76,7 +76,7 @@ def run_bot():
         elif int(state['Position'])!= c.position:
             message = c.wait_for_message()
             turn = c.get_current_turn()
-            print(str(turn['PlaysMade']) + " " + str(turn['CardValue'][1]) + "'s were played")
+            print("Player " + str(turn['Position']) + "played " + str(turn['PlaysMade']) + " " + str(turn['CardValue'][1]))
             x = input("Pass or Call?")
             while True:
                 if x == "Pass":
@@ -87,6 +87,7 @@ def run_bot():
                     break
                 else:
                     print("Invalid Input")
+                    x = input("Pass or Call?")
             
             time.sleep(0.1)
             c.update_player_info()
