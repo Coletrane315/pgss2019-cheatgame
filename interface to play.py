@@ -16,7 +16,7 @@ def run_bot():
     join_game(c,game_id)
 
     message = c.wait_for_message()
-
+    print(message)
 
     
     while True:
@@ -64,10 +64,12 @@ def run_bot():
             #print(c.hand)
 
             message = c.wait_for_message()
+            print(message)
             if(message[0] == 'GAME_OVER'):
                 print ("Game Over: Position: " + str(message['WinningPosition']) + " won!")
                 return
             message = c.wait_for_message()
+            print(message)
             if(message[0] == 'CALLED'):
                 print("Somebody called bluff")
                 if(message[1][1]['WasLie']):
@@ -75,14 +77,17 @@ def run_bot():
                 else:
                     print("It was not a lie")
                 message = c.wait_for_message()
+                print(message)
                 print("Turn Over")
             
         elif int(state['Position'])!= c.position:
             message = c.wait_for_message()
+            print(message)
             turn = c.get_current_turn()
             print("Player " + str(turn['Position']) + " played ")
-            print (turn['PlaysMade'])
-            print((turn['CardValue'])
+            print (turn['CardsDown'])
+            print((turn['CardValue']))
+            print("Your Hand: " + str(c.hand))
             x = input("Pass or Call?")
             while True:
                 if x == "Pass":
@@ -94,10 +99,10 @@ def run_bot():
                 else:
                     print("Invalid Input")
                     x = input("Pass or Call?")
-            
             time.sleep(0.1)
             c.update_player_info()
             message = c.wait_for_message()
+            print(message)
             if(message[0] == 'GAME_OVER'):
                 print ("Game Over: Position: " + str(message['WinningPosition']) + " won!")
                 return
@@ -108,6 +113,7 @@ def run_bot():
                 else:
                     print("It was not a lie")
                 message = c.wait_for_message()
+                print(message)
                 print("Turn Over")
 
         time.sleep(0.1)

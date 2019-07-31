@@ -47,6 +47,7 @@ def run_bot():
             print(game_state._num_cards_center)
             print(game_state._players[0]._num_cards)
             print(game_state._players[1]._num_cards)
+            game_state._bot._hand=c.hand
 
             print("time to play!")
             if int(c.get_current_turn()['Position'])==game_state._bot_pos:
