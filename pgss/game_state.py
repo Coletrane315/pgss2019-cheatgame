@@ -69,6 +69,7 @@ class Player:
             self._num_each_card.append(0)
         for card in self._hand:
             self._num_each_card[self.get_number_val(card['Value'])-1]+=1
+        self._num_cards=len(self._hand)
 
     def count_cycles_until_win_bot(self):
         for i in range(len(self._sequence)-1,0,-1):
