@@ -1,4 +1,4 @@
-from pgss import bluff_ml call_bluff, game_state
+from pgss import bluff_ml, call_bluff, game_state
 import cheat
 from cheat import client
 
