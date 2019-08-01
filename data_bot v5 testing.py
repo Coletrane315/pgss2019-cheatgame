@@ -3,39 +3,30 @@ from Cycle import probability_of_holes
 import cheat
 from cheat import client
 import csv
+import random
 import time
 
 def run_bot():
-    
-    with open('data_real_people.csv','a') as csvFile:
+    file = 'data' + str(random.randint(1,1000)) + '.csv'
+    with open(file,'a') as csvFile:
         writer = csv.writer(csvFile)
-        numplayers=3
+        numplayers=4
         calc = probability_of_holes.SeqProbabilityCalculator()
         bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
         call_thresh=.3 #temp
         in_progress=False
 
-        cmd=input("create game (c) or join game (j)?")
-        if cmd=="c":
-            c=cheat.client.Client("host_bot")
-            c.create_game(numplayers)
-            x = c.list_games()
-            dictionary = x[-1]
-            game_id = (dictionary['Id'])
-            print(game_id)
-            join_game(c,game_id)
-            while(c.players_connected != numplayers):
-                c.update_game()
-                time.sleep(1)
-            c.update_player_info()
-            c.update_game()
-            c.start_game()
-
-        elif cmd=="j":
-            game_id=input("paste game id")
-            c=cheat.client.Client("joined_bot")
-            join_game(c,game_id)
-
+        in_progress=True
+        load_time=True #initial load time for the game
+        name = 'bot' + str(random.randint(0,1000000))
+        c=cheat.client.Client(name)
+        x = c.list_games()
+        dictionary = x[-1]
+        game_id = (dictionary['Id'])
+        c.game_id = game_id
+        c.join_game()
+        c.update_game()
+        
         if c.wait_for_message()[0]=='GAME_STARTED':
             game_state=start_game(c)
         
@@ -97,11 +88,13 @@ def run_bot():
                     
                     if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
                         print("i call cheat!")
-                        c.play_call()
+                        if(c.get_current_turn()['Position'] == current_turn):
+                            c.play_call()
                         c.update_player_info()
                     else:
                         print("seems ok enough...")
-                        c.play_pass()
+                        if(c.get_current_turn()['Position'] == current_turn):
+                            c.play_pass()
                         c.update_player_info()
 
                     #every time an opponent plays, we can't tell if they lied
@@ -111,6 +104,7 @@ def run_bot():
             msg=c.wait_for_message()
             called = 1
             if msg[0]=='CALLED':
+                called = 0
                 print(str(x))
                 print(str(msg))
                 if msg[1][1]['WasLie']==False:

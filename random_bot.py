@@ -62,12 +62,16 @@ def run_bot():
                 
         elif int(state['Position'])!= c.position:
             c.wait_for_message()
-            time.sleep(0.5)
+            current_turn = c.get_current_turn()['Position']
+            time.sleep(0.1)
             x=random.randint(0,1)
             if x == 0:
-                c.play_pass()
+                if(c.get_current_turn()['Position'] == current_turn):
+                    c.play_pass()
             else:
-                c.play_call()
+                time.sleep(0.1)
+                if(c.get_current_turn()['Position'] == current_turn):
+                    c.play_call()
             time.sleep(0.1)
             c.update_player_info()
             message = c.wait_for_message()
