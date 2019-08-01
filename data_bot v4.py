@@ -7,9 +7,9 @@ import time
 
 def run_bot():
     
-    with open('data.csv','a') as csvFile:
+    with open('data_real_people.csv','a') as csvFile:
         writer = csv.writer(csvFile)
-        numplayers=2
+        numplayers=3
         calc = probability_of_holes.SeqProbabilityCalculator()
         bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
         call_thresh=.3 #temp
@@ -60,6 +60,7 @@ def run_bot():
                 game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
                 c.update_player_info()
                 x=c.get_current_turn()
+                game_state._num_cards_center+=x['CardsDown']
                 c.hand.sort(key=lambda x:x['Value'])
                 game_state._bot._hand=c.hand
                 game_state._bot.count_num_cards()
@@ -81,7 +82,7 @@ def run_bot():
                 #opponent played something
                     
                     x=c.get_current_turn()
-
+                    time.sleep(0.5)
                     game_state._num_cards_center+=int(x['CardsDown'])
                     print("put "+str(x['CardsDown'])+" in")
                     print("now center pile has "+str(game_state._num_cards_center)+" cards")
@@ -124,6 +125,7 @@ def run_bot():
                 break
             if msg[0]=='TURN_OVER':
                 pass
+            time.sleep(1)
     csvFile.close()
 
 """
@@ -174,7 +176,6 @@ def decide_cards_to_play(value,game_state,bluff_thresh,data,lie):
         data.append(bluff_calc.prob_calculator(value,game_state,5-num_r))
             
     bot._cards_played_into_center+=len(cards_to_play)
-    game_state._num_cards_center+=len(cards_to_play)
 
     for card in cards_to_play:
         game_state._known_center_cards.append(card)
