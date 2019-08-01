@@ -7,11 +7,11 @@ import time
 
 def run_bot():
     
-    with open('data_helen_ricky.csv','a') as csvFile:
+    with open('data_ricky_emma.csv','a') as csvFile:
         writer = csv.writer(csvFile)
-        numplayers=3
+        numplayers=4
         calc = probability_of_holes.SeqProbabilityCalculator()
-        bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
+        bluff_thresh= .05 - calc.calculateProbability(numplayers)[0]#temp
         call_thresh=.8 #temp
         in_progress=False
 
@@ -23,6 +23,7 @@ def run_bot():
             dictionary = x[-1]
             game_id = (dictionary['Id'])
             print(game_id)
+            print(c._player_id)
             join_game(c,game_id)
             while(c.players_connected != numplayers):
                 c.update_game()
@@ -40,6 +41,7 @@ def run_bot():
             game_state=start_game(c)
         
         while True:
+            csvFile.flush()
             #start playing the game here
             c.update_player_info()
             x=c.get_current_turn()
@@ -113,12 +115,10 @@ def run_bot():
                     print("deciding to call...")
                     
                     if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
-                        c.play_call()
                         print("i call cheat!")
                         print(c.play_call())
                         c.update_player_info()
                     else:
-                        c.play_pass()
                         print("seems ok enough...")
                         print(c.play_pass())
                         c.update_player_info()
@@ -132,6 +132,7 @@ def run_bot():
             msg=c.wait_for_message()
             called = 1
             if msg[0]=='CALLED':
+                called = 0
                 print(str(x))
                 print(str(msg))
                 if msg[1][1]['WasLie']==False:
@@ -148,7 +149,7 @@ def run_bot():
                 pass
             print('turn over')
             time.sleep(0.1)
-        csvFile.flush()
+           
     csvFile.close()
 
 """
