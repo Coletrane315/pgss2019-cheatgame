@@ -7,7 +7,7 @@ import time
 
 def run_bot():
     
-    with open('data_test.csv','a') as csvFile:
+    with open('data_helen_ricky.csv','a') as csvFile:
         writer = csv.writer(csvFile)
         numplayers=3
         calc = probability_of_holes.SeqProbabilityCalculator()
@@ -87,8 +87,8 @@ def run_bot():
             #not bot's turn
                 
                 msg=c.wait_for_message()
+                time.sleep(1)
                 x=c.get_current_turn()
-                current_turn = x['Position']
                 print(msg)
                 if msg[0]=='GAME_OVER':
                     break
@@ -113,14 +113,14 @@ def run_bot():
                     print("deciding to call...")
                     
                     if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
+                        c.play_call()
                         print("i call cheat!")
-                        if(c.get_current_turn()['Position'] != current_turn())
-                            print(c.play_call())
+                        print(c.play_call())
                         c.update_player_info()
                     else:
+                        c.play_pass()
                         print("seems ok enough...")
-                        if(c.get_current_turn()['Position'] != current_turn())
-                            c.play_pass()
+                        print(c.play_pass())
                         c.update_player_info()
 
                     #every time an opponent plays, we can't tell if they lied
@@ -148,7 +148,7 @@ def run_bot():
                 pass
             print('turn over')
             time.sleep(0.1)
-            csvFile.flush()
+        csvFile.flush()
     csvFile.close()
 
 """
