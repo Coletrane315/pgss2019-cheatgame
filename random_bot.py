@@ -45,10 +45,10 @@ def run_bot():
                 if(x>0):
                     x-=1
                 y-=1
-            time.sleep(0.1)
+            time.sleep(1)
             c.play_cards(c.hand[x:x+y])
             
-            time.sleep(0.1)
+            time.sleep(1)
             c.update_player_info()
             #print(c.hand)
 
@@ -80,7 +80,7 @@ def run_bot():
             if(message[0] == 'CALLED'):
                 message = c.wait_for_message()
 
-        time.sleep(0.1)
+        time.sleep(1)
             
 """
 Joins the game.

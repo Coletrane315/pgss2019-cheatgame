@@ -13,7 +13,7 @@ def run_bot():
         numplayers=4
         calc = probability_of_holes.SeqProbabilityCalculator()
         bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
-        call_thresh=.8 #temp
+        call_thresh=.3 #temp
         in_progress=False
 
         in_progress=True
@@ -47,50 +47,33 @@ def run_bot():
                 
                 print("playing cards...")
                 value=c.get_current_turn()['CardValue']
-                print(value)
-                play = decide_cards_to_play(value,game_state,bluff_thresh,data,lie)
-                time.sleep(2)
-                print(c.play_cards(play))
-                msg=c.wait_for_message()
-                print(msg)
-                if msg[0]=='GAME_OVER':
-                    break
-                x=c.get_current_turn()
-                print(x)
+                c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh,data,lie))
                 game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
                 c.update_player_info()
-                while ('CardsDown' in x) == False:
-                    x=c.get_current_turn()
-                    time.sleep(1)
-                    print('stuck')
-                print(x)
-                print('CardsDown' in x)
+                x=c.get_current_turn()
                 game_state._num_cards_center+=x['CardsDown']
                 c.hand.sort(key=lambda x:x['Value'])
                 game_state._bot._hand=c.hand
                 game_state._bot.count_num_cards()
                 game_state._bot._num_cards=len(game_state._bot._hand)
-                #print("now my hand is: "+str(game_state._bot._hand))
+                print("now my hand is: "+str(game_state._bot._hand))
                 game_state._bot.count_cycles_until_win_bot()
-
+                msg=c.wait_for_message()
+                if msg[0]=='GAME_OVER':
+                    break
 
             else:
             #not bot's turn
                 
                 msg=c.wait_for_message()
-                x=c.get_current_turn()
-                current_turn = x['Position']
-                print(msg)
                 if msg[0]=='GAME_OVER':
                     break
 
                 if  msg[0]=='CARDS_PLAYED':
                 #opponent played something
-                    while ('CardsDown' in x) == False:
-                        x=c.get_current_turn()
-                        time.sleep(1)
-                        print('stuck')
-                    print(x)
+                    
+                    x=c.get_current_turn()
+                    time.sleep(0.5)
                     game_state._num_cards_center+=int(x['CardsDown'])
                     print("put "+str(x['CardsDown'])+" in")
                     print("now center pile has "+str(game_state._num_cards_center)+" cards")
@@ -118,8 +101,6 @@ def run_bot():
                     #so we just remove all the info we have on them
                     game_state._players[int(x['Position'])-1]._hand=[]
 
-            print(c.get_current_turn())
-            print('waiting for message')
             msg=c.wait_for_message()
             called = 1
             if msg[0]=='CALLED':
@@ -138,9 +119,7 @@ def run_bot():
                 break
             if msg[0]=='TURN_OVER':
                 pass
-            print('turn over')
-            time.sleep(0.1)
-            csvFile.flush()
+            time.sleep(1)
     csvFile.close()
 
 """
@@ -169,22 +148,20 @@ Considers whether or not to lie by calling decide_bluff.
 Returns a list of cards to play.
 """
 def decide_cards_to_play(value,game_state,bluff_thresh,data,lie):
-    #print("hand on local: "+str(game_state._bot._hand))
+    print("hand on local: "+str(game_state._bot._hand))
     bot=game_state._bot
     value=bot.get_number_val(value)
     cards_to_play=[]
     bluff_calc=bluff.BluffCalculator()
     cards=bluff_calc.should_bluff(game_state,value,bluff_thresh)
-    print(cards)
     if cards!=0:
         lie.append(0)
         cards_to_play=cards
         data.append(game_state._num_cards_center)
         data.append(game_state._num_played_cards)
-    if(len(bot._hand) != 0):
-        for card in bot._hand:
-            if card['Value']==value:
-                cards_to_play.append(card)
+    for card in bot._hand:
+        if card['Value']==value:
+            cards_to_play.append(card)
     if cards!=0:
         num_r = 0
         for c in cards_to_play:
@@ -193,10 +170,11 @@ def decide_cards_to_play(value,game_state,bluff_thresh,data,lie):
         data.append(bluff_calc.prob_calculator(value,game_state,5-num_r))
             
     bot._cards_played_into_center+=len(cards_to_play)
+
     for card in cards_to_play:
         game_state._known_center_cards.append(card)
     
-    #print("cards played: "+str(cards_to_play))
+    print("cards played: "+str(cards_to_play))
     return cards_to_play
     
 

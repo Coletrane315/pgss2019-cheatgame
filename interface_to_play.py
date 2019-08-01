@@ -93,15 +93,9 @@ def run_bot():
             x = input("Pass or Call?")
             while True:
                 if x == "Pass":
-                    if c.get_current_turn()['Position'] != current_turn:
-                        print("Someone called already")
-                        break
                     c.play_pass()
                     break
                 elif x == "Call":
-                    if c.get_current_turn()['Position'] != current_turn:
-                        print("Someone called already")
-                        break
                     c.play_call()
                     break
                 else:
