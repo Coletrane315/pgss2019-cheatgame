@@ -7,7 +7,7 @@ import time
 
 def run_bot():
     
-    with open('data_test.csv','a') as csvFile:
+    with open('data_helen_ricky.csv','a') as csvFile:
         writer = csv.writer(csvFile)
         numplayers=3
         calc = probability_of_holes.SeqProbabilityCalculator()
