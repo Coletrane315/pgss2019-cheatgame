@@ -29,7 +29,7 @@ class BluffCalculator:
         #precondition: we have x number of cards and need to find out if we should lie or not 
         #postcondition: returns the card that we should lie with (0 means we shouldn't lie)
 
-        def should_bluff_ml(self, game_state, card_turn):
+        def should_bluff(self, game_state, card_turn):
                 cards = game_state._bot._num_each_card
                 num = cards[card_turn - 1]
                 if num == 0:

@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import dense
+from keras.layers import Dense
 from keras.models import model_from_json
 from sklearn.datasets.samples_generator import make_blobs
 from sklearn.preprocessing import MinMaxScaler
