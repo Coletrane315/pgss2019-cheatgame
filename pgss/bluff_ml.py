@@ -1,5 +1,5 @@
-import probfunc
-import game_state
+from pgss import probfunc
+from pgss import game_state
 from lyingModel import LyingPredictOutput
 
 
@@ -49,7 +49,7 @@ class BluffCalculator:
                 cardsOfLastSeq = self.get_num_cards_of_last_seq(game_state)
                 cards = game_state._bot._num_each_card
                 num = len(cards)
-                centerCards = game_state.num_cards_center
+                centerCards = game_state._num_cards_center
                 cardsSwitched = 1 
 
                 while cardsOfLastSeq > 1:    
@@ -74,7 +74,7 @@ class BluffCalculator:
         def should_bluff_1_card(self, card_turn, game_state):
                 cards = game_state._bot._num_each_card
                 num = len(cards)
-                centerCards = game_state.num_cards_center
+                centerCards = game_state._num_cards_center
                 cardsSwitched = 1
 
                 #calc probabilities 
@@ -94,7 +94,7 @@ class BluffCalculator:
         def should_bluff_2_card(self, card_turn, game_state):
                 cards = game_state._bot._num_each_card
                 num = len(cards)
-                centerCards = game_state.num_cards_center
+                centerCards = game_state._num_cards_center
                 cardsSwitched = 1
 
                 #calc probabilities
