@@ -1,7 +1,7 @@
 from pgss import probfunc
 from pgss import game_state
 from lyingModel import LyingPredictOutput
-import numpy as np
+
 
 class BluffCalculator:
         def prob_calculator(self, card_turn, game_state, r):
@@ -57,13 +57,13 @@ class BluffCalculator:
                         probLieWithTwoCopies = self.prob_calculator(cardsOfLastSeq, game_state, 3) + self.prob_calculator(cardsOfLastSeq, game_state, 4)
                         probLieWithOneCopy = self.prob_calculator(cardsOfLastSeq, game_state, 4)
                         
-                        if LyingPredictOutput.predict(np.array([[num, centerCards, cardsSwitched, probLieWithThreeCopies]])) == 1:
+                        if LyingPredictOutput.predict([[num, centerCards, cardsSwitched, probLieWithThreeCopies]]) == 1:
                                 return self.pick_card_to_lie_with(game_state, 3) #kicks it to figure out what we should lie with
                         
-                        elif LyingPredictOutput.predict(np.array([[num, centerCards, cardsSwitched, probLieWithTwoCopies]])) == 1:
+                        elif LyingPredictOutput.predict([[num, centerCards, cardsSwitched, probLieWithTwoCopies]]) == 1:
                                 return self.pick_card_to_lie_with(game_state, 2)
                         
-                        elif LyingPredictOutput.predict(np.array([[num, centerCards, cardsSwitched, probLieWithOneCopy]])) == 1:
+                        elif LyingPredictOutput.predict([[num, centerCards, cardsSwitched, probLieWithOneCopy]]) == 1:
                                 return self.pick_card_to_lie_with(game_state, 1) 
                         else:
                                 cardsOfLastSeq -= 1 #we shouldn't lie because there is a high chance opponents will have card(s).
@@ -80,10 +80,10 @@ class BluffCalculator:
                 #calc probabilities 
                 probLieWithThreeCopies = (self.prob_calculator(card_turn, game_state, 2) + self.prob_calculator(card_turn, game_state, 3))
                 probLieWithTwoCopies = self.prob_calculator(card_turn, game_state, 3)
-                if LyingPredictOutput.predict(np.array([[num, centerCards, cardsSwitched, probLieWithThreeCopies]])) == 1:
+                if LyingPredictOutput.predict([[num, centerCards, cardsSwitched, probLieWithThreeCopies]]) == 1:
                         return self.pick_card_to_lie_with(game_state, 2) #kicks it to figure out what we should lie with
                 
-                elif LyingPredictOutput.predict(np.array([[num, centerCards, cardsSwitched, probLieWithTwoCopies]])) == 1:
+                elif LyingPredictOutput.predict([[num, centerCards, cardsSwitched, probLieWithTwoCopies]]) == 1:
                         return self.pick_card_to_lie_with(game_state, 1)
                 
                 else:
@@ -99,7 +99,7 @@ class BluffCalculator:
 
                 #calc probabilities
                 prob = self.prob_calculator(card_turn, game_state, 2)
-                if LyingPredictOutput.predict(np.array([[num, centerCards, cardsSwitched, prob]])) == 1:
+                if LyingPredictOutput.predict([[num, centerCards, cardsSwitched, prob]]) == 1:
                         return self.pick_card_to_lie_with(game_state, 1) #kicks it to figure out what we should lie with    
                 else:
                         return 0 #indicates we should not lie -- in this instance if we have 3 or 4 of a card
