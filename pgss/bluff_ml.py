@@ -1,5 +1,5 @@
-import probfunc
-import game_state
+from pgss import probfunc
+from pgss import game_state
 from lyingModel import LyingPredictOutput
 
 
