@@ -30,7 +30,7 @@ class CallBluffCalculator:
         h = game_state._bot._num_cards #should be own hand size
         l = game_state._players[opponent_ind]._num_cards #should be opponent's hand size
         j = game_state._bot._cycles_until_win #should be how many turns until bot wins
-        i = game_state._num_cards_center+num_cards_played #should be number of cards in center pile
+        i = game_state._num_cards_center #should be number of cards in center pile
 
         print(str(h)+" "+str(l))
 

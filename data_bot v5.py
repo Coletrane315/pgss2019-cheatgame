@@ -7,9 +7,9 @@ import time
 
 def run_bot():
     
-    with open('data_test.csv','a') as csvFile:
+    with open('data_bot.csv','a') as csvFile:
         writer = csv.writer(csvFile)
-        numplayers=3
+        numplayers=2
         calc = probability_of_holes.SeqProbabilityCalculator()
         bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
         call_thresh=.8 #temp
@@ -44,6 +44,7 @@ def run_bot():
             c.update_player_info()
             x=c.get_current_turn()
             lie = []
+            bot_called = False
             print(game_state._num_cards_center)
             print(game_state._players[0]._num_cards)
             print(game_state._players[1]._num_cards)
@@ -113,13 +114,21 @@ def run_bot():
                     print("deciding to call...")
                     
                     if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
+                        call_data = []
+                        call_data.append(game_state._bot._num_each_card[x['CardValue']-1])
+                        call_data.append(x['CardsDown'])
+                        call_data.append(len(c.hand))
+                        call_data.append(game_state._players[int(x['Position'])-1]._num_cards)
+                        call_data.append(game_state._bot._cycles_until_win)
+                        call_data.append(game_state._num_cards_center)
+                        bot_called = True
                         print("i call cheat!")
-                        if(c.get_current_turn()['Position'] != current_turn())
-                            print(c.play_call())
+                        if(c.get_current_turn()['Position'] == current_turn):
+                            c.play_call()
                         c.update_player_info()
                     else:
                         print("seems ok enough...")
-                        if(c.get_current_turn()['Position'] != current_turn())
+                        if(c.get_current_turn()['Position'] == current_turn):
                             c.play_pass()
                         c.update_player_info()
 
@@ -132,12 +141,21 @@ def run_bot():
             msg=c.wait_for_message()
             called = 1
             if msg[0]=='CALLED':
+                called = 0
                 print(str(x))
                 print(str(msg))
                 if msg[1][1]['WasLie']==False:
+                    if(bot_called):
+                        call_data.append(0) 
                     center_pile_collected(game_state,int(msg[1][1]['CallPosition']),msg[1][1]['Cards'],c)
                 else:
+                    if(bot_called):
+                        call_data.append(0) 
                     center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'],c)
+                with open('call_data.csv', 'a') as csvFileCall:
+                    writer_call = csv.writer(csvFileCall)
+                    writer_call.writerow(call_data)
+                    csvFileCall.close()
                 msg=c.wait_for_message()
             if(len(lie) != 0):
                 data.append(called)
