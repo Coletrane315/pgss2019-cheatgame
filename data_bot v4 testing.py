@@ -3,22 +3,17 @@ from Cycle import probability_of_holes
 import cheat
 from cheat import client
 import csv
-import random
 import time
+import random
 
 def run_bot():
-<<<<<<< HEAD:data_bot v5 testing.py
-    file = 'data' + str(random.randint(1,1000)) + '.csv'
-    with open(file,'a') as csvFile:
-=======
     
-    with open('data_test.csv','a') as csvFile:
->>>>>>> parent of bacb308... Merge branch 'master' of https://github.com/amcguier/pgss2019-cheatgame:data_bot v4.py
+    with open('data_real_people.csv','a') as csvFile:
         writer = csv.writer(csvFile)
-        numplayers=4
+        numplayers=3
         calc = probability_of_holes.SeqProbabilityCalculator()
-        bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
-        call_thresh=.8 #temp
+        bluff_thresh= .1 - calc.calculateProbability(numplayers)[0]#temp
+        call_thresh=.3 #temp
         in_progress=False
 
         in_progress=True
@@ -30,7 +25,6 @@ def run_bot():
         game_id = (dictionary['Id'])
         c.game_id = game_id
         c.join_game()
-        c.update_game()
         
         if c.wait_for_message()[0]=='GAME_STARTED':
             game_state=start_game(c)
@@ -61,15 +55,13 @@ def run_bot():
                 if msg[0]=='GAME_OVER':
                     break
                 x=c.get_current_turn()
-                print(x)
-                game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
-                c.update_player_info()
                 while ('CardsDown' in x) == False:
                     x=c.get_current_turn()
                     time.sleep(1)
                     print('stuck')
+                game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
+                c.update_player_info()
                 print(x)
-                print('CardsDown' in x)
                 game_state._num_cards_center+=x['CardsDown']
                 c.hand.sort(key=lambda x:x['Value'])
                 game_state._bot._hand=c.hand
@@ -84,8 +76,8 @@ def run_bot():
                 
                 msg=c.wait_for_message()
                 time.sleep(1)
-                x=c.get_current_turn()
                 print(msg)
+                x=c.get_current_turn()
                 if msg[0]=='GAME_OVER':
                     break
 
@@ -95,7 +87,7 @@ def run_bot():
                         x=c.get_current_turn()
                         time.sleep(1)
                         print('stuck')
-                    print(x)
+                    time.sleep(1)
                     game_state._num_cards_center+=int(x['CardsDown'])
                     print("put "+str(x['CardsDown'])+" in")
                     print("now center pile has "+str(game_state._num_cards_center)+" cards")
@@ -109,16 +101,6 @@ def run_bot():
                     print("deciding to call...")
                     
                     if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
-<<<<<<< HEAD:data_bot v5 testing.py
-                        print("i call cheat!")
-                        if(c.get_current_turn()['Position'] == current_turn):
-                            c.play_call()
-                        c.update_player_info()
-                    else:
-                        print("seems ok enough...")
-                        if(c.get_current_turn()['Position'] == current_turn):
-                            c.play_pass()
-=======
                         c.play_call()
                         print("i call cheat!")
                         print(c.play_call())
@@ -127,7 +109,6 @@ def run_bot():
                         c.play_pass()
                         print("seems ok enough...")
                         print(c.play_pass())
->>>>>>> parent of bacb308... Merge branch 'master' of https://github.com/amcguier/pgss2019-cheatgame:data_bot v4.py
                         c.update_player_info()
 
                     #every time an opponent plays, we can't tell if they lied
@@ -139,7 +120,6 @@ def run_bot():
             msg=c.wait_for_message()
             called = 1
             if msg[0]=='CALLED':
-                called = 0
                 print(str(x))
                 print(str(msg))
                 if msg[1][1]['WasLie']==False:
@@ -156,7 +136,6 @@ def run_bot():
                 pass
             print('turn over')
             time.sleep(0.1)
-        csvFile.flush()
     csvFile.close()
 
 """

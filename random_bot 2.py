@@ -31,7 +31,7 @@ def run_bot():
         print(state)
         
         if load_time==True:
-            time.sleep(1)
+            time.sleep(0.1)
             load_time=False
 
         #print(state)
@@ -62,25 +62,13 @@ def run_bot():
                 
         elif int(state['Position'])!= c.position:
             c.wait_for_message()
-<<<<<<< HEAD
-            current_turn = c.get_current_turn()['Position']
-            time.sleep(0.1)
-            x=random.randint(0,1)
-=======
-            time.sleep(0.1)
+            time.sleep(1)
             x=random.randint(0,0)
->>>>>>> parent of bacb308... Merge branch 'master' of https://github.com/amcguier/pgss2019-cheatgame
             if x == 0:
-                if(c.get_current_turn()['Position'] == current_turn):
-                    c.play_pass()
+                c.play_pass()
             else:
                 time.sleep(0.1)
-<<<<<<< HEAD
-                if(c.get_current_turn()['Position'] == current_turn):
-                    c.play_call()
-=======
                 c.play_call()
->>>>>>> parent of bacb308... Merge branch 'master' of https://github.com/amcguier/pgss2019-cheatgame
             time.sleep(0.1)
             c.update_player_info()
             message = c.wait_for_message()

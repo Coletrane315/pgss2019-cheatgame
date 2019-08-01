@@ -83,6 +83,11 @@ def run_bot():
             
         elif int(state['Position'])!= c.position:
             message = c.wait_for_message()
+<<<<<<< HEAD:interface_to_play.py
+=======
+            current_turn = c.get_current_turn()['Position']
+            print(message)
+>>>>>>> parent of bacb308... Merge branch 'master' of https://github.com/amcguier/pgss2019-cheatgame:interface to play.py
             turn = c.get_current_turn()
             current_turn = c.get_current_turn()['Position']
             print(message)
@@ -93,9 +98,15 @@ def run_bot():
             x = input("Pass or Call?")
             while True:
                 if x == "Pass":
+                    if c.get_current_turn()['Position'] != current_turn:
+                        print("Someone called already")
+                        break
                     c.play_pass()
                     break
                 elif x == "Call":
+                    if c.get_current_turn()['Position'] != current_turn:
+                        print("Someone called already")
+                        break
                     c.play_call()
                     break
                 else:

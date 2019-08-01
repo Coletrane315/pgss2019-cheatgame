@@ -3,39 +3,45 @@ from Cycle import probability_of_holes
 import cheat
 from cheat import client
 import csv
-import random
 import time
 
 def run_bot():
-<<<<<<< HEAD:data_bot v5 testing.py
-    file = 'data' + str(random.randint(1,1000)) + '.csv'
-    with open(file,'a') as csvFile:
-=======
     
-    with open('data_test.csv','a') as csvFile:
->>>>>>> parent of bacb308... Merge branch 'master' of https://github.com/amcguier/pgss2019-cheatgame:data_bot v4.py
+    with open('data_ricky_emma.csv','a') as csvFile:
         writer = csv.writer(csvFile)
         numplayers=4
         calc = probability_of_holes.SeqProbabilityCalculator()
-        bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
+        bluff_thresh= .05 - calc.calculateProbability(numplayers)[0]#temp
         call_thresh=.8 #temp
         in_progress=False
 
-        in_progress=True
-        load_time=True #initial load time for the game
-        name = 'bot' + str(random.randint(0,1000000))
-        c=cheat.client.Client(name)
-        x = c.list_games()
-        dictionary = x[-1]
-        game_id = (dictionary['Id'])
-        c.game_id = game_id
-        c.join_game()
-        c.update_game()
-        
+        cmd=input("create game (c) or join game (j)?")
+        if cmd=="c":
+            c=cheat.client.Client("host_bot")
+            c.create_game(numplayers)
+            x = c.list_games()
+            dictionary = x[-1]
+            game_id = (dictionary['Id'])
+            print(game_id)
+            print(c._player_id)
+            join_game(c,game_id)
+            while(c.players_connected != numplayers):
+                c.update_game()
+                time.sleep(1)
+            c.update_player_info()
+            c.update_game()
+            c.start_game()
+
+        elif cmd=="j":
+            game_id=input("paste game id")
+            c=cheat.client.Client("joined_bot")
+            join_game(c,game_id)
+
         if c.wait_for_message()[0]=='GAME_STARTED':
             game_state=start_game(c)
         
         while True:
+            csvFile.flush()
             #start playing the game here
             c.update_player_info()
             x=c.get_current_turn()
@@ -109,25 +115,12 @@ def run_bot():
                     print("deciding to call...")
                     
                     if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
-<<<<<<< HEAD:data_bot v5 testing.py
-                        print("i call cheat!")
-                        if(c.get_current_turn()['Position'] == current_turn):
-                            c.play_call()
-                        c.update_player_info()
-                    else:
-                        print("seems ok enough...")
-                        if(c.get_current_turn()['Position'] == current_turn):
-                            c.play_pass()
-=======
-                        c.play_call()
                         print("i call cheat!")
                         print(c.play_call())
                         c.update_player_info()
                     else:
-                        c.play_pass()
                         print("seems ok enough...")
                         print(c.play_pass())
->>>>>>> parent of bacb308... Merge branch 'master' of https://github.com/amcguier/pgss2019-cheatgame:data_bot v4.py
                         c.update_player_info()
 
                     #every time an opponent plays, we can't tell if they lied
@@ -156,7 +149,7 @@ def run_bot():
                 pass
             print('turn over')
             time.sleep(0.1)
-        csvFile.flush()
+           
     csvFile.close()
 
 """
