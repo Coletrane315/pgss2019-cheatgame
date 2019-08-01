@@ -4,38 +4,28 @@ import cheat
 from cheat import client
 import csv
 import time
+import random
 
 def run_bot():
     
-    with open('data_helen_ricky.csv','a') as csvFile:
+    with open('data_real_people.csv','a') as csvFile:
         writer = csv.writer(csvFile)
         numplayers=3
         calc = probability_of_holes.SeqProbabilityCalculator()
-        bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
-        call_thresh=.8 #temp
+        bluff_thresh= .1 - calc.calculateProbability(numplayers)[0]#temp
+        call_thresh=.3 #temp
         in_progress=False
 
-        cmd=input("create game (c) or join game (j)?")
-        if cmd=="c":
-            c=cheat.client.Client("host_bot")
-            c.create_game(numplayers)
-            x = c.list_games()
-            dictionary = x[-1]
-            game_id = (dictionary['Id'])
-            print(game_id)
-            join_game(c,game_id)
-            while(c.players_connected != numplayers):
-                c.update_game()
-                time.sleep(1)
-            c.update_player_info()
-            c.update_game()
-            c.start_game()
-
-        elif cmd=="j":
-            game_id=input("paste game id")
-            c=cheat.client.Client("joined_bot")
-            join_game(c,game_id)
-
+        in_progress=True
+        load_time=True #initial load time for the game
+        name = 'bot' + str(random.randint(0,1000000))
+        c=cheat.client.Client(name)
+        x = c.list_games()
+        dictionary = x[-1]
+        game_id = (dictionary['Id'])
+        c.game_id = game_id
+        c.join_game()
+        
         if c.wait_for_message()[0]=='GAME_STARTED':
             game_state=start_game(c)
         
@@ -65,15 +55,13 @@ def run_bot():
                 if msg[0]=='GAME_OVER':
                     break
                 x=c.get_current_turn()
-                print(x)
-                game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
-                c.update_player_info()
                 while ('CardsDown' in x) == False:
                     x=c.get_current_turn()
                     time.sleep(1)
                     print('stuck')
+                game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
+                c.update_player_info()
                 print(x)
-                print('CardsDown' in x)
                 game_state._num_cards_center+=x['CardsDown']
                 c.hand.sort(key=lambda x:x['Value'])
                 game_state._bot._hand=c.hand
@@ -88,8 +76,8 @@ def run_bot():
                 
                 msg=c.wait_for_message()
                 time.sleep(1)
-                x=c.get_current_turn()
                 print(msg)
+                x=c.get_current_turn()
                 if msg[0]=='GAME_OVER':
                     break
 
@@ -99,7 +87,7 @@ def run_bot():
                         x=c.get_current_turn()
                         time.sleep(1)
                         print('stuck')
-                    print(x)
+                    time.sleep(1)
                     game_state._num_cards_center+=int(x['CardsDown'])
                     print("put "+str(x['CardsDown'])+" in")
                     print("now center pile has "+str(game_state._num_cards_center)+" cards")
@@ -148,7 +136,6 @@ def run_bot():
                 pass
             print('turn over')
             time.sleep(0.1)
-        csvFile.flush()
     csvFile.close()
 
 """
