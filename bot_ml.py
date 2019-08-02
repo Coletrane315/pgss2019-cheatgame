@@ -1,10 +1,10 @@
-from pgss import bluff_ml, call_bluff_ml, game_state
+from pgss import bluff_ml, call_bluff, game_state
 import cheat
 from cheat import client
 
 def run_bot():
 
-    #call_thresh=.3 #temp -- readd this if we get rid of the ML 
+    call_thresh=.3 #temp
     in_progress=False
 
     cmd=input("create game (c) or join game (j)?")
@@ -77,7 +77,7 @@ def run_bot():
                 
                 print("deciding to call...")
                 
-                if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown']):
+                if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
                     print("i call cheat!")
                     c.play_call()
                     c.update_player_info()
@@ -157,9 +157,9 @@ def decide_cards_to_play(value,game_state):
 Uses call_bluff to determine whether or not to call bluff on an opponent.
 Returns True if the bot decides to lie. Otherwise, returns False.
 """
-def decide_call_bluff(game_state,opp,card_val,num_cards_played):
+def decide_call_bluff(game_state,opp,card_val,num_cards_played,call_thresh):
     call_bluff_calc = call_bluff.CallBluffCalculator()
-    if call_bluff_calc.should_call_bluff(game_state,opp,card_val,num_cards_played) == 1.0:
+    if call_bluff_calc.should_call_bluff(game_state,opp,card_val,num_cards_played)>=call_thresh:
         return True
     else:
         return False
