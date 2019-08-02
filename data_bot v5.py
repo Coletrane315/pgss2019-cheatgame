@@ -9,13 +9,14 @@ def run_bot():
     
     with open('data_bot.csv','a') as csvFile:
         writer = csv.writer(csvFile)
-        numplayers=2
+        numplayers=3
         calc = probability_of_holes.SeqProbabilityCalculator()
-        bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
-        call_thresh=.8 #temp
+        bluff_thresh= .05 - calc.calculateProbability(numplayers)[0]#temp
+        call_thresh=.5 #temp
         in_progress=False
 
-        cmd=input("create game (c) or join game (j)?")
+        #cmd=input("create game (c) or join game (j)?")
+        cmd = 'c'
         if cmd=="c":
             c=cheat.client.Client("host_bot")
             c.create_game(numplayers)
@@ -59,7 +60,7 @@ def run_bot():
                 value=c.get_current_turn()['CardValue']
                 print(value)
                 play = decide_cards_to_play(value,game_state,bluff_thresh,data,lie)
-                time.sleep(2)
+                time.sleep(1)
                 print(c.play_cards(play))
                 msg=c.wait_for_message()
                 print(msg)
@@ -114,8 +115,23 @@ def run_bot():
                     print("deciding to call...")
                     
                     if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
+                        if(c.get_current_turn()['Position'] == current_turn):
+                            time.sleep(0.5)
+                            c.play_call()
+
                         call_data = []
-                        call_data.append(game_state._bot._num_each_card[x['CardValue']-1])
+                        card_val = x['CardValue']
+                        if card_val=="Ace":
+                            card_val=1
+                        elif card_val=="Jack":
+                            card_val=11
+                        elif card_val=="Queen":
+                            card_val=12
+                        elif card_val=="King":
+                            card_val=13
+                        if isinstance(card_val,list):
+                            card_val=int(card_val[1])
+                        call_data.append(game_state._bot._num_each_card[card_val-1])
                         call_data.append(x['CardsDown'])
                         call_data.append(len(c.hand))
                         call_data.append(game_state._players[int(x['Position'])-1]._num_cards)
@@ -123,8 +139,7 @@ def run_bot():
                         call_data.append(game_state._num_cards_center)
                         bot_called = True
                         print("i call cheat!")
-                        if(c.get_current_turn()['Position'] == current_turn):
-                            c.play_call()
+
                         c.update_player_info()
                     else:
                         print("seems ok enough...")
@@ -150,12 +165,13 @@ def run_bot():
                     center_pile_collected(game_state,int(msg[1][1]['CallPosition']),msg[1][1]['Cards'],c)
                 else:
                     if(bot_called):
-                        call_data.append(0) 
+                        call_data.append(1) 
                     center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'],c)
-                with open('call_data.csv', 'a') as csvFileCall:
-                    writer_call = csv.writer(csvFileCall)
-                    writer_call.writerow(call_data)
-                    csvFileCall.close()
+                if(bot_called):
+                    with open('call_data.csv', 'a') as csvFileCall:
+                        writer_call = csv.writer(csvFileCall)
+                        writer_call.writerow(call_data)
+                        csvFileCall.close()
                 msg=c.wait_for_message()
             if(len(lie) != 0):
                 data.append(called)
