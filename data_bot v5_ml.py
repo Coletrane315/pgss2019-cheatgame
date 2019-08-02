@@ -35,12 +35,8 @@ def run_bot():
         join_game(c,game_id)
 
     if c.wait_for_message()[0]=='GAME_STARTED':
-        game_state=start_game(c)
-    count = 0
+        game_state=start_game(c)s
     while True:
-        count += 1
-        if (count > 15):
-            break
         #start playing the game here
         c.update_player_info()
         x=c.get_current_turn()
