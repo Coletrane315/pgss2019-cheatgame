@@ -54,7 +54,6 @@ def run_bot():
                         x.append(cards)
                         hand.remove(cards)
                         check = True
-                        break
                 if check == False:
                     print("Card not in hand")
                 y = int(input("Which number are you playing? Enter -1 to stop choosing "))
@@ -85,8 +84,6 @@ def run_bot():
         elif int(state['Position'])!= c.position:
             message = c.wait_for_message()
             turn = c.get_current_turn()
-            current_turn = c.get_current_turn()['Position']
-            print(message)
             print("Player " + str(turn['Position']) + " played ")
             print (turn['CardsDown'])
             print((turn['CardValue']))
@@ -94,15 +91,9 @@ def run_bot():
             x = input("Pass or Call?")
             while True:
                 if x == "Pass":
-                    if c.get_current_turn()['Position'] != current_turn:
-                        print("Someone called already")
-                        break
                     c.play_pass()
                     break
                 elif x == "Call":
-                    if c.get_current_turn()['Position'] != current_turn:
-                        print("Someone called already")
-                        break
                     c.play_call()
                     break
                 else:

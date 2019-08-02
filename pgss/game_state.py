@@ -133,7 +133,7 @@ class GameState:
         self._num_cards_center=0
         self._known_center_cards=[]
         self._num_played_cards=0
-        cards_per_player= int(52/num_players)
+        cards_per_player=52/num_players
         for i in range(1,num_players+1):
             if i==self._bot_pos:
                 x=Player(bot_hand,self.calc_seq(i,num_players),len(bot_hand))

@@ -2,6 +2,7 @@ from pgss import game_state
 from pgss import probfunc
 import math
 from callBluffModel import callBluffPredictOutput
+import numpy as np
 
 class CallBluffCalculator:
     """
@@ -55,4 +56,4 @@ class CallBluffCalculator:
             return 0.0
 
         #if these two cases aren't satisfied, then this gets passed to our ML model to determine if the bot should lie or not
-        return callBluffPredictOutput.predict[[k, r, h, l, j, i]])
+        return callBluffPredictOutput.predict(np.array([[k, r, h, l, j, i]]))
