@@ -158,7 +158,7 @@ Uses call_bluff to determine whether or not to call bluff on an opponent.
 Returns True if the bot decides to lie. Otherwise, returns False.
 """
 def decide_call_bluff(game_state,opp,card_val,num_cards_played):
-    call_bluff_calc = call_bluff.CallBluffCalculator()
+    call_bluff_calc = call_bluff_ml.CallBluffCalculator()
     if call_bluff_calc.should_call_bluff(game_state,opp,card_val,num_cards_played) == 1:
         return True
     else:
