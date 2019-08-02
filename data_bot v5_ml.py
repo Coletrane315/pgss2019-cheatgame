@@ -189,7 +189,7 @@ def decide_cards_to_play(value,game_state):
     value=bot.get_number_val(value)
     cards_to_play=[]
     bluff_calc=bluff_ml.BluffCalculator()
-    cards=bluff_calc.should_bluff(game_state,value,bluff_thresh)
+    cards=bluff_calc.should_bluff(game_state,value)
     print(cards)
     if cards!=0:
         cards_to_play=cards
