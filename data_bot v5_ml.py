@@ -35,7 +35,7 @@ def run_bot():
         join_game(c,game_id)
 
     if c.wait_for_message()[0]=='GAME_STARTED':
-        game_state=start_game(c)s
+        game_state=start_game(c)
     while True:
         #start playing the game here
         c.update_player_info()
