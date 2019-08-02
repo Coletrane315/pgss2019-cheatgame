@@ -183,12 +183,12 @@ Decides which cards to play.
 Considers whether or not to lie by calling decide_bluff.
 Returns a list of cards to play.
 """
-def decide_cards_to_play(value,game_state,bluff_thresh):
+def decide_cards_to_play(value,game_state):
     #print("hand on local: "+str(game_state._bot._hand))
     bot=game_state._bot
     value=bot.get_number_val(value)
     cards_to_play=[]
-    bluff_calc=bluff.BluffCalculator()
+    bluff_calc=bluff_ml.BluffCalculator()
     cards=bluff_calc.should_bluff(game_state,value,bluff_thresh)
     print(cards)
     if cards!=0:
