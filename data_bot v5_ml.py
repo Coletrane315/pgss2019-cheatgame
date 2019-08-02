@@ -8,14 +8,14 @@ import random
 
 def run_bot():
 
-    numplayers=4
+    numplayers=3
     calc = probability_of_holes.SeqProbabilityCalculator()
     in_progress=False
 
     #cmd=input("create game (c) or join game (j)?")
     cmd = 'c'
     if cmd=="c":
-        c=cheat.client.Client("taryn_emma_helen")
+        c=cheat.client.Client("host_bot")
         c.create_game(numplayers)
         x = c.list_games()
         dictionary = x[-1]
