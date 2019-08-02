@@ -51,7 +51,7 @@ def run_bot():
                 value=c.get_current_turn()['CardValue']
                 print(value)
                 play = decide_cards_to_play(value,game_state,bluff_thresh,data,lie)
-                time.sleep(1)
+                time.sleep(3)
                 print(c.play_cards(play))
                 msg=c.wait_for_message()
                 print(msg)
