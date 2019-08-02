@@ -4,7 +4,7 @@ from cheat import client
 
 def run_bot():
 
-    call_thresh=.3 #temp
+    #call_thresh=.3 #temp
     in_progress=False
 
     cmd=input("create game (c) or join game (j)?")
@@ -159,7 +159,11 @@ Returns True if the bot decides to lie. Otherwise, returns False.
 """
 def decide_call_bluff(game_state,opp,card_val,num_cards_played):
     call_bluff_calc = call_bluff_ml.CallBluffCalculator()
+<<<<<<< HEAD
     if call_bluff_calc.should_call_bluff(game_state,opp,card_val,num_cards_played)==1:
+=======
+    if call_bluff_calc.should_call_bluff(game_state,opp,card_val,num_cards_played) == 1:
+>>>>>>> parent of 207ea31... Revert "Merge branch 'master' of https://github.com/amcguier/pgss2019-cheatgame"
         return True
     else:
         return False
