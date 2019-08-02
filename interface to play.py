@@ -83,8 +83,11 @@ def run_bot():
             
         elif int(state['Position'])!= c.position:
             message = c.wait_for_message()
+<<<<<<< HEAD:interface_to_play.py
+=======
             current_turn = c.get_current_turn()['Position']
             print(message)
+>>>>>>> parent of bacb308... Merge branch 'master' of https://github.com/amcguier/pgss2019-cheatgame:interface to play.py
             turn = c.get_current_turn()
             current_turn = c.get_current_turn()['Position']
             print(message)
