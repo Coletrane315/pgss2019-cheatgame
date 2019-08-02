@@ -1,4 +1,4 @@
-from pgss import bluff_ml, call_bluff, game_state
+from pgss import bluff_ml, call_bluff_ml, game_state
 from Cycle import probability_of_holes
 import cheat
 from cheat import client
