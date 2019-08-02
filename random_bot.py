@@ -8,7 +8,8 @@ def run_bot():
 
     in_progress=True
     load_time=True #initial load time for the game
-    c=cheat.client.Client('Simplest_Opp')
+    name = 'bot' + str(random.randint(0,1000000))
+    c=cheat.client.Client(name)
     x = c.list_games()
     dictionary = x[-1]
     game_id = (dictionary['Id'])
@@ -61,6 +62,7 @@ def run_bot():
                 
         elif int(state['Position'])!= c.position:
             c.wait_for_message()
+            time.sleep(0.5)
             x=random.randint(0,1)
             if x == 0:
                 c.play_pass()
@@ -74,7 +76,7 @@ def run_bot():
             if(message[0] == 'CALLED'):
                 message = c.wait_for_message()
 
-        time.sleep(0.1)
+        time.sleep(1)
             
 """
 Joins the game.

@@ -4,46 +4,42 @@ import cheat
 from cheat import client
 import csv
 import time
+import random
 
 def run_bot():
-    
-    with open('data_real_people.csv','a') as csvFile:
+    name = 'data' + str(random.randint(1,1000)) + '.csv'
+    with open('data_bot.csv','a') as csvFile:
         writer = csv.writer(csvFile)
         numplayers=3
         calc = probability_of_holes.SeqProbabilityCalculator()
-        bluff_thresh= .3 - calc.calculateProbability(numplayers)[0]#temp
-        call_thresh=.3 #temp
+        num = random.randint(1,100)
+        bluff_thresh= num / 100
+        num = random.randint(1,100)
+        call_thresh= num/100 #temp
         in_progress=False
 
-        cmd=input("create game (c) or join game (j)?")
-        if cmd=="c":
-            c=cheat.client.Client("host_bot")
-            c.create_game(numplayers)
-            x = c.list_games()
-            dictionary = x[-1]
-            game_id = (dictionary['Id'])
-            print(game_id)
-            join_game(c,game_id)
-            while(c.players_connected != numplayers):
-                c.update_game()
-                time.sleep(1)
-            c.update_player_info()
-            c.update_game()
-            c.start_game()
-
-        elif cmd=="j":
-            game_id=input("paste game id")
-            c=cheat.client.Client("joined_bot")
-            join_game(c,game_id)
+        in_progress=True
+        load_time=True #initial load time for the game
+        name = 'bot' + str(random.randint(0,1000000))
+        c=cheat.client.Client(name)
+        x = c.list_games()
+        dictionary = x[-1]
+        game_id = (dictionary['Id'])
+        c.game_id = game_id
+        c.join_game()
 
         if c.wait_for_message()[0]=='GAME_STARTED':
             game_state=start_game(c)
-        
+        count = 0
         while True:
+            count += 1
+            if (count > 15):
+                break
             #start playing the game here
             c.update_player_info()
             x=c.get_current_turn()
             lie = []
+            bot_called = False
             print(game_state._num_cards_center)
             print(game_state._players[0]._num_cards)
             print(game_state._players[1]._num_cards)
@@ -56,33 +52,50 @@ def run_bot():
                 
                 print("playing cards...")
                 value=c.get_current_turn()['CardValue']
-                c.play_cards(decide_cards_to_play(value,game_state,bluff_thresh,data,lie))
+                print(value)
+                play = decide_cards_to_play(value,game_state,bluff_thresh,data,lie)
+                time.sleep(1)
+                print(c.play_cards(play))
+                msg=c.wait_for_message()
+                print(msg)
+                if msg[0]=='GAME_OVER':
+                    break
+                x=c.get_current_turn()
+                print(x)
                 game_state._bot._sequence.append(game_state._bot._sequence.pop(0))
                 c.update_player_info()
-                x=c.get_current_turn()
+                while ('CardsDown' in x) == False:
+                    x=c.get_current_turn()
+                    time.sleep(1)
+                    print('stuck')
+                print(x)
+                print('CardsDown' in x)
                 game_state._num_cards_center+=x['CardsDown']
                 c.hand.sort(key=lambda x:x['Value'])
                 game_state._bot._hand=c.hand
                 game_state._bot.count_num_cards()
                 game_state._bot._num_cards=len(game_state._bot._hand)
-                print("now my hand is: "+str(game_state._bot._hand))
+                #print("now my hand is: "+str(game_state._bot._hand))
                 game_state._bot.count_cycles_until_win_bot()
-                msg=c.wait_for_message()
-                if msg[0]=='GAME_OVER':
-                    break
+
 
             else:
             #not bot's turn
                 
                 msg=c.wait_for_message()
+                x=c.get_current_turn()
+                current_turn = x['Position']
+                print(msg)
                 if msg[0]=='GAME_OVER':
                     break
 
                 if  msg[0]=='CARDS_PLAYED':
                 #opponent played something
-                    
-                    x=c.get_current_turn()
-                    time.sleep(0.5)
+                    while ('CardsDown' in x) == False:
+                        x=c.get_current_turn()
+                        time.sleep(1)
+                        print('stuck')
+                    print(x)
                     game_state._num_cards_center+=int(x['CardsDown'])
                     print("put "+str(x['CardsDown'])+" in")
                     print("now center pile has "+str(game_state._num_cards_center)+" cards")
@@ -94,29 +107,66 @@ def run_bot():
                     game_state._bot.count_num_cards()
                     
                     print("deciding to call...")
-                    
+                    time.sleep(random.randint(1,6)/4)
                     if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
+
+                        if(c.get_current_turn()['Position'] == current_turn):
+                            time.sleep(0.5)
+                            c.play_call()
+                            
+                        call_data = []
+                        card_val = x['CardValue']
+                        if card_val=="Ace":
+                            card_val=1
+                        elif card_val=="Jack":
+                            card_val=11
+                        elif card_val=="Queen":
+                            card_val=12
+                        elif card_val=="King":
+                            card_val=13
+                        if isinstance(card_val,list):
+                            card_val=int(card_val[1])
+                        call_data.append(game_state._bot._num_each_card[card_val-1])
+                        call_data.append(x['CardsDown'])
+                        call_data.append(len(c.hand))
+                        call_data.append(game_state._players[int(x['Position'])-1]._num_cards)
+                        call_data.append(game_state._bot._cycles_until_win)
+                        call_data.append(game_state._num_cards_center)
+                        bot_called = True
                         print("i call cheat!")
-                        c.play_call()
+
                         c.update_player_info()
                     else:
                         print("seems ok enough...")
-                        c.play_pass()
+                        if(c.get_current_turn()['Position'] == current_turn):
+                            c.play_pass()
                         c.update_player_info()
 
                     #every time an opponent plays, we can't tell if they lied
                     #so we just remove all the info we have on them
                     game_state._players[int(x['Position'])-1]._hand=[]
 
+            print(c.get_current_turn())
+            print('waiting for message')
             msg=c.wait_for_message()
             called = 1
             if msg[0]=='CALLED':
+                called = 0
                 print(str(x))
                 print(str(msg))
                 if msg[1][1]['WasLie']==False:
+                    if(bot_called):
+                        call_data.append(0) 
                     center_pile_collected(game_state,int(msg[1][1]['CallPosition']),msg[1][1]['Cards'],c)
                 else:
+                    if(bot_called):
+                        call_data.append(1) 
                     center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'],c)
+                if(bot_called):
+                    with open('call_data.csv', 'a') as csvFileCall:
+                        writer_call = csv.writer(csvFileCall)
+                        writer_call.writerow(call_data)
+                        csvFileCall.close()
                 msg=c.wait_for_message()
             if(len(lie) != 0):
                 data.append(called)
@@ -125,7 +175,9 @@ def run_bot():
                 break
             if msg[0]=='TURN_OVER':
                 pass
-            time.sleep(1)
+            print('turn over')
+            time.sleep(0.1)
+            csvFile.flush()
     csvFile.close()
 
 """
@@ -154,20 +206,22 @@ Considers whether or not to lie by calling decide_bluff.
 Returns a list of cards to play.
 """
 def decide_cards_to_play(value,game_state,bluff_thresh,data,lie):
-    print("hand on local: "+str(game_state._bot._hand))
+    #print("hand on local: "+str(game_state._bot._hand))
     bot=game_state._bot
     value=bot.get_number_val(value)
     cards_to_play=[]
     bluff_calc=bluff.BluffCalculator()
     cards=bluff_calc.should_bluff(game_state,value,bluff_thresh)
+    print(cards)
     if cards!=0:
         lie.append(0)
         cards_to_play=cards
         data.append(game_state._num_cards_center)
         data.append(game_state._num_played_cards)
-    for card in bot._hand:
-        if card['Value']==value:
-            cards_to_play.append(card)
+    if(len(bot._hand) != 0):
+        for card in bot._hand:
+            if card['Value']==value:
+                cards_to_play.append(card)
     if cards!=0:
         num_r = 0
         for c in cards_to_play:
@@ -176,11 +230,10 @@ def decide_cards_to_play(value,game_state,bluff_thresh,data,lie):
         data.append(bluff_calc.prob_calculator(value,game_state,5-num_r))
             
     bot._cards_played_into_center+=len(cards_to_play)
-
     for card in cards_to_play:
         game_state._known_center_cards.append(card)
     
-    print("cards played: "+str(cards_to_play))
+    #print("cards played: "+str(cards_to_play))
     return cards_to_play
     
 
@@ -234,5 +287,7 @@ def center_pile_collected(game_state,player_num,turned_cards,c):
         player._cards_played_into_center=0
 
 if __name__ == '__main__':
-    run_bot()
+    while True:
+        run_bot()
+        time.sleep(5)
     
