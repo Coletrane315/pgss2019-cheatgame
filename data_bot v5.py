@@ -4,6 +4,7 @@ import cheat
 from cheat import client
 import csv
 import time
+import random
 
 def run_bot():
     
@@ -39,8 +40,11 @@ def run_bot():
 
         if c.wait_for_message()[0]=='GAME_STARTED':
             game_state=start_game(c)
-        
+        count = 0
         while True:
+            count += 1
+            if (count > 15):
+                break
             #start playing the game here
             c.update_player_info()
             x=c.get_current_turn()
@@ -60,7 +64,7 @@ def run_bot():
                 value=c.get_current_turn()['CardValue']
                 print(value)
                 play = decide_cards_to_play(value,game_state,bluff_thresh,data,lie)
-                time.sleep(3)
+                time.sleep(1)
                 print(c.play_cards(play))
                 msg=c.wait_for_message()
                 print(msg)
@@ -113,7 +117,8 @@ def run_bot():
                     game_state._bot.count_num_cards()
                     
                     print("deciding to call...")
-                    
+
+                    time.sleep(random.randint(1,6)/4)
                     if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
                         if(c.get_current_turn()['Position'] == current_turn):
                             time.sleep(0.5)
@@ -292,5 +297,6 @@ def center_pile_collected(game_state,player_num,turned_cards,c):
         player._cards_played_into_center=0
 
 if __name__ == '__main__':
-    run_bot()
+    while True:
+        run_bot()
     

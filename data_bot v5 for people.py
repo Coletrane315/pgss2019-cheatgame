@@ -7,26 +7,36 @@ import time
 import random
 
 def run_bot():
-    name = 'data' + str(random.randint(1,1000)) + '.csv'
-    with open('data_bot.csv','a') as csvFile:
+    
+    with open('data_ricky_emma.csv','a') as csvFile:
         writer = csv.writer(csvFile)
         numplayers=3
         calc = probability_of_holes.SeqProbabilityCalculator()
-        num = random.randint(1,100)
-        bluff_thresh= num / 100
-        num = random.randint(1,100)
-        call_thresh= num/100 #temp
+        bluff_thresh= .05 - calc.calculateProbability(numplayers)[0]#temp
+        call_thresh=.5 #temp
         in_progress=False
 
-        in_progress=True
-        load_time=True #initial load time for the game
-        name = 'bot' + str(random.randint(0,1000000))
-        c=cheat.client.Client(name)
-        x = c.list_games()
-        dictionary = x[-1]
-        game_id = (dictionary['Id'])
-        c.game_id = game_id
-        c.join_game()
+        #cmd=input("create game (c) or join game (j)?")
+        cmd = 'c'
+        if cmd=="c":
+            c=cheat.client.Client("join_this")
+            c.create_game(numplayers)
+            x = c.list_games()
+            dictionary = x[-1]
+            game_id = (dictionary['Id'])
+            print(game_id)
+            join_game(c,game_id)
+            while(c.players_connected != numplayers):
+                c.update_game()
+                time.sleep(1)
+            c.update_player_info()
+            c.update_game()
+            c.start_game()
+
+        elif cmd=="j":
+            game_id=input("paste game id")
+            c=cheat.client.Client("joined_bot")
+            join_game(c,game_id)
 
         if c.wait_for_message()[0]=='GAME_STARTED':
             game_state=start_game(c)
@@ -107,13 +117,13 @@ def run_bot():
                     game_state._bot.count_num_cards()
                     
                     print("deciding to call...")
+
                     time.sleep(random.randint(1,6)/4)
                     if decide_call_bluff(game_state,x['Position'],x['CardValue'],x['CardsDown'],call_thresh):
-
                         if(c.get_current_turn()['Position'] == current_turn):
                             time.sleep(0.5)
                             c.play_call()
-                            
+
                         call_data = []
                         card_val = x['CardValue']
                         if card_val=="Ace":
@@ -163,7 +173,7 @@ def run_bot():
                         call_data.append(1) 
                     center_pile_collected(game_state,int(x['Position']),msg[1][1]['Cards'],c)
                 if(bot_called):
-                    with open('call_data.csv', 'a') as csvFileCall:
+                    with open('call_data_ricky.csv', 'a') as csvFileCall:
                         writer_call = csv.writer(csvFileCall)
                         writer_call.writerow(call_data)
                         csvFileCall.close()
@@ -289,5 +299,4 @@ def center_pile_collected(game_state,player_num,turned_cards,c):
 if __name__ == '__main__':
     while True:
         run_bot()
-        time.sleep(5)
     
